@@ -31,7 +31,7 @@ Camera::Camera(unsigned width, unsigned height, float fov) :
     position = Vec3D();
     u = Vec3D(1, 0, 0);     // Right
     v = Vec3D(0, 1, 0);     // Up
-    w = Vec3D(0, 0, -1);    // FOrward
+    w = Vec3D(0, 0, -1);    // Facing
 }
 
 Camera::Camera(unsigned width, unsigned height, float fov, Vec3D pos, Vec3D facing) :
