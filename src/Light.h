@@ -21,16 +21,32 @@
 
 #include "Common.h"
 
+/**
+ * A ray of light with an origin and a direction
+ */
 class Ray {
     public:
+        /**
+         * A source point and the direction of propagation.
+         * If any of the vectors are not unit they will be normalised.
+         */
         Ray(Vec3D origin, Vec3D direction);
         virtual ~Ray();
 
+        /**
+         * Get a point in the trajectory of the ray. The parameter
+         * t represents the distance from the origin.
+         */
         Vec3D point(Real t);
+
+        /** Return the origin vector of the ray */
         Vec3D getOrigin();
+
+        /** Return the direction vector of the ray */
         Vec3D getDirection();
 
     private:
+        /** Origin vector */
         Vec3D origin;
         Vec3D direction;
 };
