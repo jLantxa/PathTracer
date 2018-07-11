@@ -19,6 +19,8 @@
 #ifndef _INCLUDE_RAYTRACER_GEOMETRY_H_
 #define _INCLUDE_RAYTRACER_GEOMETRY_H_
 
+#include <math.h>
+
 /** A 3D vector with its typical operators */
 template <typename T> class Vector3D {
     public:
@@ -32,6 +34,8 @@ template <typename T> class Vector3D {
         Vector3D();
         virtual ~Vector3D();
 
+        /** Copy components from vector v */
+        void set(const Vector3D& v);
         /** Set the 3D components */
         void set(T x, T y, T z);
         /** Set the 2D components (z = 0) */
@@ -64,6 +68,14 @@ template <typename U>
 Vector3D<U> operator*(const U k, const Vector3D<U>& v) {
     Vector3D<U> mult(k*v.x, k*v.y, k*v.z);
     return mult;
+}
+
+inline float degToRad(float deg) {
+    return M_PI * deg / 180.0;
+}
+
+inline float radToDeg(float rad) {
+    return 180.0 * rad / M_PI;
 }
 
 

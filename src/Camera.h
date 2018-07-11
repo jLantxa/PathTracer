@@ -24,22 +24,33 @@
 #include "Geometry.h"
 #include "Light.h"
 
-
+/**
+ * A camera object. The Field Of Vision parameter is always entered in degrees.
+ */
 class Camera {
     public:
-        Camera(unsigned width, unsigned height);
-        Camera(unsigned width, unsigned height, Vec3D pos, Vec3D looking);
-        Camera(unsigned width, unsigned height, Vec3D pos, Vec3D looking, Vec3D up);
+        Camera(unsigned width, unsigned height, float fov);
+        Camera(unsigned width, unsigned height, float fov, Vec3D pos, Vec3D facing);
         virtual ~Camera();
 
         /** Get a Ray from the eye to pixel [i, j] */
-        Ray getRayToPixel();
+        Ray getRayToPixel(unsigned i, unsigned j);
+
+        float getWidth();
+        float getHeight();
+        float getFov();
+        float getFovInRad();
+        float getAspectRatio();
     
     private:
         /** Screen width in pixels */
         unsigned width;
         /** Screen height in pixels */
         unsigned height;
+        /** Field of Vision in radians */
+        float fov;
+        /** Aspect ratio (width/height) */
+        float aspectRatio;
 
         /** Position of the camera <i>eye</i> */
         Vec3D position;

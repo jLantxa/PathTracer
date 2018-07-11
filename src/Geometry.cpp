@@ -24,16 +24,23 @@
  * Definitions of Vector3D
 */
 template <typename T>
-Vector3D<T>::Vector3D(T x, T y, T z) : x(x), y(y), z(z) {}
+Vector3D<T>::Vector3D(T x, T y, T z) : x(x), y(y), z(z) { }
 
 template <typename T>
-Vector3D<T>::Vector3D(T x, T y) : x(x), y(y), z(0) {}
+Vector3D<T>::Vector3D(T x, T y) : x(x), y(y), z(0) { }
 
 template <typename T>
-Vector3D<T>::Vector3D() : x(0), y(0), z(0) {}
+Vector3D<T>::Vector3D() : x(0), y(0), z(0) { }
 
 template <typename T>
-Vector3D<T>::~Vector3D() {}
+Vector3D<T>::~Vector3D() { }
+
+template <typename T>
+void Vector3D<T>::set(const Vector3D<T>& v) {
+    x = v.x;
+    y = v.y;
+    z = v.z;
+}
 
 template <typename T>
 void Vector3D<T>::set(T sx, T sy, T sz) {

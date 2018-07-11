@@ -19,16 +19,10 @@
 #include <iostream>
 #include <assert.h>
 
+#include "TestCommon.h"
 #include "Common.h"
 #include "Geometry.h"
 #include "Light.h"
-
-void printVector(std::string pfx, Vec3D& v) {
-    std::cout << pfx << " = (" <<
-        v.x << ", " <<
-        v.y << ", " <<
-        v.z << ")" << std::endl;
-}
 
 int main(int argc, char* args[]) {
     Vec3D v1(1, 0, 0);
