@@ -9,4 +9,4 @@ docs:
 	doxygen
 
 VectorTest:
-	$(CC) -I $(SRC)/ $(SRC)/Geometry.cpp $(TEST)/VectorTest.cpp -o $(BUILD)/VectorTest
+	$(CC) -I $(SRC)/ $(SRC)/Geometry.cpp $(SRC)/Light.cpp $(TEST)/VectorTest.cpp -o $(BUILD)/VectorTest

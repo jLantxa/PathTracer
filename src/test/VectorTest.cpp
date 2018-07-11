@@ -17,33 +17,59 @@
  */
 
 #include <iostream>
+#include <assert.h>
 
+#include "Common.h"
 #include "Geometry.h"
+#include "Light.h"
 
-void printVector(Vector3D<float>& v) {
-    std::cout << "(" <<
+void printVector(std::string pfx, Vec3D& v) {
+    std::cout << pfx << " = (" <<
         v.x << ", " <<
         v.y << ", " <<
         v.z << ")" << std::endl;
 }
 
 int main(int argc, char* args[]) {
-    Vector3D<float> v1(1, 0, 0);
-    Vector3D<float> v2(0, 1, 0);
-    Vector3D<float> v3(0, 0, 1);
+    Vec3D v1(1, 0, 0);
+    Vec3D v2(0, 1, 0);
+    Vec3D v3(0, 0, 1);
+    float k = 1.5;
 
-    Vector3D<float> vsum = v1 + v2 + v3;
-    Vector3D<float> vsub = v1 - v2 - v3;
+    Vec3D vsum = v1 + v2 + v3;
+    Vec3D vsub = v1 - v2 - v3;
 
     float dot = v1.dot(vsum);
     float orthDot = v1.dot(v2);
-    Vector3D<float> cross = v1.cross(v2);
+    Vec3D cross = v1.cross(v2);
+    Vec3D scalar = k * v1;
 
-    printVector(vsum);
-    printVector(vsub);
-    std::cout << dot << std::endl;
-    std::cout << orthDot << std::endl;
-    printVector(cross);
+    printVector("vsum", vsum);
+    printVector("vsub", vsub);
+    std::cout << "dot = " << dot << std::endl;
+    std::cout << "orthDot = " << orthDot << std::endl;
+    printVector("cross", cross);
+    printVector("scalar", scalar);
+
+    Ray ray(v1, v2);
+    Vec3D point = ray.point(1.0);
+    printVector("ray point", point);
+
+    Vec3D assertVec;
+    assertVec.set(1, 1, 1);
+    assert(vsum == assertVec);
+    assertVec.set(1, -1, -1);
+    assert(vsub == assertVec);
+    assertVec.set(0, 0, 1);
+    assert(cross == assertVec);
+    assertVec.set(k, 0, 0);
+    assert(scalar == assertVec);
+    assert(dot == 1);
+    assert(orthDot == 0);
+    assertVec.set(1, 1, 0);
+    assert(point == assertVec);
+
+    std::cout << "All test passed." << std::endl;
 
     return 0;
 }

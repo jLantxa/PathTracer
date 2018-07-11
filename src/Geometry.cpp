@@ -36,6 +36,20 @@ template <typename T>
 Vector3D<T>::~Vector3D() {}
 
 template <typename T>
+void Vector3D<T>::set(T sx, T sy, T sz) {
+    x = sx;
+    y = sy;
+    z = sz;
+}
+
+template <typename T>
+void Vector3D<T>::set(T sx, T sy) {
+    x = sx;
+    y = sy;
+    z = 0;
+}
+
+template <typename T>
 T Vector3D<T>::dist() {
     return sqrt(x*x + y*y + z*z);
 }
@@ -48,24 +62,24 @@ Vector3D<T> Vector3D<T>::normalize() {
 }
 
 template <typename T>
-Vector3D<T> Vector3D<T>::operator+(Vector3D& v) {
+Vector3D<T> Vector3D<T>::operator+(const Vector3D& v) {
     Vector3D sum(x+v.x, y+v.y, z+v.z);
     return sum;
 }
 
 template <typename T>
-Vector3D<T> Vector3D<T>::operator-(Vector3D& v) {
+Vector3D<T> Vector3D<T>::operator-(const Vector3D& v) {
     Vector3D<T> sum(x-v.x, y-v.y, z-v.z);
     return sum;
 }
 
 template <typename T>
-T Vector3D<T>::dot(Vector3D<T>& v) {
+T Vector3D<T>::dot(const Vector3D<T>& v) {
     return x*v.x + y*v.y + z*v.z;
 }
 
 template <typename T>
-Vector3D<T> Vector3D<T>::cross(Vector3D& v) {
+Vector3D<T> Vector3D<T>::cross(const Vector3D<T>& v) {
     Vector3D<T> cross(
         y*v.z - z*v.y,
         z*v.x - x*v.z,
@@ -74,15 +88,13 @@ Vector3D<T> Vector3D<T>::cross(Vector3D& v) {
 }
 
 template <typename T>
-Vector3D<T> operator*(T k, Vector3D<T>& v) {
-    Vector3D<T> mult(k*v.x, k*v.y, k*v.z);
-    return mult;
+bool Vector3D<T>::operator==(const Vector3D<T>& v) {
+    return (x==v.x && y==v.y && z==v.z);
 }
 
 template <typename T>
-Vector3D<T> operator*(Vector3D<T>& v, T k) {
-    Vector3D<T> mult(k*v.x, k*v.y, k*v.z);
-    return mult;
+bool Vector3D<T>::operator!=(const Vector3D<T>& v) {
+    return (x!=v.x || y!=v.y || z!=v.z);
 }
 
 /* Specialisations of Vector3D */

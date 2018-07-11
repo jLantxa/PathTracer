@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-#ifndef _INCLUDE_GEOMETRY_H_
-#define _INCLUDE_GEOMETRY_H_
+#ifndef _INCLUDE_RAYTRACER_GEOMETRY_H_
+#define _INCLUDE_RAYTRACER_GEOMETRY_H_
 
 template <typename T> class Vector3D {
     public:
@@ -28,22 +28,31 @@ template <typename T> class Vector3D {
         Vector3D();
         virtual ~Vector3D();
 
+        void set(T x, T y, T z);
+        void set(T x, T y);
+
         T dist();
         Vector3D normalize();
 
         // Addition and subtraction
-        Vector3D operator+(Vector3D& v);
-        Vector3D operator-(Vector3D& v);
+        Vector3D operator+(const Vector3D& v);
+        Vector3D operator-(const Vector3D& v);
 
-        T dot(Vector3D& v);
-        Vector3D cross(Vector3D& v);
+        template <typename U>
+        friend Vector3D<U> operator*(const U k, const Vector3D<U>& v);
+
+        T dot(const Vector3D& v);
+        Vector3D cross(const Vector3D& v);
+
+        bool operator==(const Vector3D& v);
+        bool operator!=(const Vector3D& v);
 };
 
-template <typename T>
-T operator*(T k, Vector3D<T>& v);
+template <typename U>
+Vector3D<U> operator*(const U k, const Vector3D<U>& v) {
+    Vector3D<U> mult(k*v.x, k*v.y, k*v.z);
+    return mult;
+}
 
-template <typename T>
-T operator*(Vector3D<T>& v, T k);
 
-
-#endif // _INCLUDE_GEOMETRY_H_
+#endif // _INCLUDE_RAYTRACER_GEOMETRY_H_
