@@ -51,4 +51,10 @@ class Ray {
         Vec3D direction;
 };
 
+class LightSource {
+    public:
+        LightSource();
+        virtual ~LightSource();
+};
+
 #endif // _INCLUDE_RAYTRACER_LIGHT_H_

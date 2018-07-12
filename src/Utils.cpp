@@ -54,3 +54,25 @@ Real intersectPlane(Vec3D l0, Vec3D l, Vec3D p0, Vec3D n) {
     Real t = num/den;
     return t;
 }
+
+/* Ray Tracer */
+int colorToRGB(Color& color) {
+    int rgb;
+    // Valid values from 0 to 1.0
+    int r = clamp((int) color.x * 255, 0, 255);
+    int g = clamp((int) color.y * 255, 0, 255);
+    int b = clamp((int) color.z * 255, 0, 255);
+
+    rgb |= 0xFF000000;
+    rgb |= (r << 16) | 0x00FF0000;
+    rgb |= (g << 8) | 0x0000FF00;
+    rgb |= (b << 8) | 0x000000FF;
+    return rgb;
+}
+
+int clamp(int x, int min, int max) {
+    int clamped = x;
+    if (clamped < min) clamped = min;
+    else if (clamped > max) clamped = max;
+    return clamped;
+}

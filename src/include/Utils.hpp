@@ -21,6 +21,7 @@
 
 #include "Common.hpp"
 #include "Geometry.hpp"
+#include "Objects.hpp"
 
 /** Calculate discriminant b^2 - 4ac */
 Real discriminant(Real a, Real b, Real c);
@@ -34,5 +35,10 @@ struct Deg2Solution {
 void solveDeg2(Real a, Real b, Real c, struct Deg2Solution& result);
 
 Real intersectPlane(Vec3D l0, Vec3D l, Vec3D p0, Vec3D n);
+
+/* Ray Tracer */
+int colorToRGB(Color& color);
+
+int clamp(int x, int min, int max);
 
 #endif // _INCLUDE_RAYTRACER_UTILS_H_
