@@ -14,15 +14,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 #include <iostream>
 #include <assert.h>
 
-#include "TestCommon.h"
-#include "Common.h"
-#include "Geometry.h"
-#include "Light.h"
+#include "test/TestCommon.hpp"
+
+#include "Common.hpp"
+#include "Geometry.hpp"
+#include "Light.hpp"
 
 int main(int argc, char* args[]) {
     Vec3D v1(1, 0, 0);

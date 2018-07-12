@@ -14,14 +14,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
-#include "Geometry.h"
+#ifndef _INCLUDE_RAYTRACER_TEST_COMMON_H_
+#define _INCLUDE_RAYTRACER_TEST_COMMON_H_
 
-#ifndef _INCLUDE_RAYTRACER_COMMON_H
-#define _INCLUDE_RAYTRACER_COMMON_H
+#include <iostream>
+#include "Common.hpp"
+#include "Geometry.hpp"
 
-using Real =  float;
-using Vec3D = Vector3D<Real>;
+void printVector(Vec3D& v) {
+    std::cout << "(" <<
+        v.x << ", " <<
+        v.y << ", " <<
+        v.z << ")" << std::endl;
+}
 
-#endif // _INCLUDE_RAYTRACER_COMMON_H
+void printVector(std::string pfx, Vec3D& v) {
+    std::cout << pfx;
+    printVector(v);
+}
+
+#endif // _INCLUDE_RAYTRACER_TEST_COMMON_H_

@@ -14,12 +14,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 #ifndef _INCLUDE_RAYTRACER_LIGHT_H_
 #define _INCLUDE_RAYTRACER_LIGHT_H_
 
-#include "Common.h"
+#include "Common.hpp"
 
 /**
  * A ray of light with an origin and a direction

@@ -14,15 +14,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 #ifndef _INCLUDE_RAYTRACER_CAMERA_H_
 #define _INCLUDE_RAYTRACER_CAMERA_H_
 
-#include "Common.h"
+#include "Common.hpp"
 
-#include "Geometry.h"
-#include "Light.h"
+#include "Geometry.hpp"
+#include "Light.hpp"
 
 /**
  * A camera object. The Field Of Vision parameter is always entered in degrees.

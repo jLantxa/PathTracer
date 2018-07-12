@@ -14,12 +14,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
-#include "Common.h"
-#include "Light.h"
+#include "Common.hpp"
+#include "Light.hpp"
 
-#include "Geometry.h"
+#include "Geometry.hpp"
 
 Ray::Ray(Vec3D origin, Vec3D direction) :
     origin(origin.normalize()),

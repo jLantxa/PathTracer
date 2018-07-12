@@ -14,13 +14,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
- #include "Common.h"
- #include "Camera.h"
+ #include "Common.hpp"
+ #include "Camera.hpp"
 
- #include "Geometry.h"
- #include "Light.h"
+ #include "Geometry.hpp"
+ #include "Light.hpp"
 
 Camera::Camera(unsigned width, unsigned height, float fov) :
         width(width),

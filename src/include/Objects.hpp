@@ -14,14 +14,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 #ifndef _INCLUDE_RAYTRACER_OBJECTS_H_
 #define _INCLUDE_RAYTRACER_OBJECTS_H_
 
-#include "Common.h"
-#include "Geometry.h"
-#include "Light.h"
+#include "Common.hpp"
+#include "Geometry.hpp"
+#include "Light.hpp"
 
 typedef Vector3D<float> Color;
 
@@ -30,13 +30,13 @@ typedef Vector3D<float> Color;
  */
 class Object3D {
     public:
-        Object3D();
-        virtual ~Object3D() = 0;
+        Object3D(Color color);
+        virtual ~Object3D();
 
         virtual Color getColor() = 0;
         virtual Real intersect(const Ray& ray) = 0;
     
-    private:
+    protected:
         Color color;
 };
 
