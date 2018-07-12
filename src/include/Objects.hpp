@@ -34,7 +34,7 @@ class Object3D {
         virtual ~Object3D();
 
         virtual Color getColor() = 0;
-        virtual Real intersect(const Ray& ray) = 0;
+        virtual Real intersect(Ray& ray) = 0;
     
     protected:
         Color color;
@@ -48,7 +48,7 @@ class Sphere : public Object3D {
         virtual ~Sphere();
 
         virtual Color getColor();
-        virtual Real intersect(const Ray& ray);
+        virtual Real intersect(Ray& ray);
 
     private:
         Vec3D center;
@@ -62,7 +62,7 @@ class Plane : public Object3D {
         virtual ~Plane();
 
         virtual Color getColor();
-        virtual Real intersect(const Ray& ray);
+        virtual Real intersect(Ray& ray);
 
     private:
         Vec3D position;

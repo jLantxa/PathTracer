@@ -19,7 +19,7 @@
 #ifndef _INCLUDE_RAYTRACER_GEOMETRY_H_
 #define _INCLUDE_RAYTRACER_GEOMETRY_H_
 
-#include <math.h>
+#include <cmath>
 
 /** A 3D vector with its typical operators */
 template <typename T> class Vector3D {

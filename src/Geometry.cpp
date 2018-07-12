@@ -18,7 +18,7 @@
 
 #include "Geometry.hpp"
 
-#include <math.h>
+#include <cmath>
 
 /*
  * Definitions of Vector3D

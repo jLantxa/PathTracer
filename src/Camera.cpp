@@ -22,6 +22,8 @@
  #include "Geometry.hpp"
  #include "Light.hpp"
 
+ #include <cmath>
+
 Camera::Camera(unsigned width, unsigned height, float fov) :
         width(width),
         height(height),

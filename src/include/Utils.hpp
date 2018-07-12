@@ -16,12 +16,23 @@
  * limitations under the License.
 */
 
+#ifndef _INCLUDE_RAYTRACER_UTILS_H_
+#define _INCLUDE_RAYTRACER_UTILS_H_
+
+#include "Common.hpp"
 #include "Geometry.hpp"
 
-#ifndef _INCLUDE_RAYTRACER_COMMON_H
-#define _INCLUDE_RAYTRACER_COMMON_H
+/** Calculate discriminant b^2 - 4ac */
+Real discriminant(Real a, Real b, Real c);
 
-using Real = float;
-using Vec3D = Vector3D<Real>;
+struct Deg2Solution {
+    bool valid = false;
+    Real x1;
+    Real x2;
+};
 
-#endif // _INCLUDE_RAYTRACER_COMMON_H
+void solveDeg2(Real a, Real b, Real c, struct Deg2Solution& result);
+
+Real intersectPlane(Vec3D l0, Vec3D l, Vec3D p0, Vec3D n);
+
+#endif // _INCLUDE_RAYTRACER_UTILS_H_
