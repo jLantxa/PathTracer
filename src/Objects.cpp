@@ -29,6 +29,8 @@
 /* Object3D */
 Object3D::Object3D(Color color) : color(color) { }
 
+Object3D::~Object3D() { }
+
 
 /* Sphere */
 Sphere::Sphere(Color color, Vec3D center, Real radius) : Object3D(color),

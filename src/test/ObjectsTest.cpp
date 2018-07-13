@@ -16,25 +16,27 @@
  * limitations under the License.
 */
 
+#include <iostream>
+
+#include "test/TestCommon.hpp"
 #include "Common.hpp"
-#include "Light.hpp"
-
 #include "Geometry.hpp"
+#include "Objects.hpp"
+#include "Light.hpp"
+#include "Utils.hpp"
 
-Ray::Ray(Vec3D o, Vec3D dir) :
-    origin(),
-    direction(dir.normalize()) { }
+int main (int argc, char* argv[]) {
+    Color sphereColor(0, 1, 0);
+    Vec3D spherePos(0, 0, -2);
+    Real sphereRadius = 1;
+    Sphere sphere(sphereColor, spherePos, sphereRadius);
 
-Ray::~Ray() {}
+    Vec3D rayOrigin(0, 0, 0);
+    Vec3D rayDirection(0, 0, -1);
+    Ray ray(rayOrigin, rayDirection);
 
-Vec3D Ray::getOrigin() {
-    return origin;
-}
+    Real t = sphere.intersect(ray);
+    std::cout << t << std::endl;
 
-Vec3D Ray::getDirection() {
-    return direction;
-}
-
-Vec3D Ray::point(Real t) {
-    return origin + t*direction;
+    return 0;
 }

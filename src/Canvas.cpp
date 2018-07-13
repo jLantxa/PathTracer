@@ -16,25 +16,30 @@
  * limitations under the License.
 */
 
-#include "Common.hpp"
-#include "Light.hpp"
+#include "Canvas.hpp"
 
-#include "Geometry.hpp"
-
-Ray::Ray(Vec3D o, Vec3D dir) :
-    origin(),
-    direction(dir.normalize()) { }
-
-Ray::~Ray() {}
-
-Vec3D Ray::getOrigin() {
-    return origin;
+Canvas::Canvas(unsigned width, unsigned height) : width(width), height(height) {
+    rgb = new int*[width];
+    for (int i = 0; i < width; i++) {
+        rgb[i] = new int[height];
+    }
 }
 
-Vec3D Ray::getDirection() {
-    return direction;
+Canvas::~Canvas() {
+    for (int i = 0; i < width; i++) {
+        delete rgb[i];
+    }
+    delete rgb;
 }
 
-Vec3D Ray::point(Real t) {
-    return origin + t*direction;
+unsigned Canvas::getWidth() {
+    return width;
+}
+
+unsigned Canvas::getHeight() {
+    return height;
+}
+
+int* Canvas::operator[](unsigned i) {
+    return rgb[i];
 }

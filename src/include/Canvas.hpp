@@ -16,25 +16,25 @@
  * limitations under the License.
 */
 
-#include "Common.hpp"
-#include "Light.hpp"
+#ifndef _INCLUDE_RAYTRACER_CANVAS_H_
+#define _INCLUDE_RAYTRACER_CANVAS_H_
 
-#include "Geometry.hpp"
+/* A container for an ARGB surface */
+class Canvas {
+    public:
+        Canvas(unsigned width, unsigned height);
+        virtual ~Canvas();
+        
+        unsigned getWidth();
+        unsigned getHeight();
 
-Ray::Ray(Vec3D o, Vec3D dir) :
-    origin(),
-    direction(dir.normalize()) { }
+        int* operator[](unsigned i);
 
-Ray::~Ray() {}
+    private:
+        unsigned width;
+        unsigned height;
 
-Vec3D Ray::getOrigin() {
-    return origin;
-}
+        int** rgb;
+};
 
-Vec3D Ray::getDirection() {
-    return direction;
-}
-
-Vec3D Ray::point(Real t) {
-    return origin + t*direction;
-}
+#endif // _INCLUDE_RAYTRACER_CANVAS_H_

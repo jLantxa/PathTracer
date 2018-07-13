@@ -34,13 +34,29 @@ void solveDeg2(Real a, Real b, Real c, struct Deg2Solution& result) {
         return;
     }
 
-    if (discr == 0) {
-        Real r = -b/(2*a);
-        result.x1 = result.x2 = -b/(2*a);
+    // Second degree
+    if (a != 0) {
+        if (discr == 0) {
+            Real r = -b/(2*a);  // XXX: Float, double, etc operation
+            result.x1 = r;
+            result.x2 = r;
+        } else {
+            Real a2 = 2*a;
+            Real sqrtDisc = sqrt(discr);
+            result.x1 = (-b + sqrtDisc) / a2; // XXX: Float, double, etc operation
+            result.x2 = (-b - sqrtDisc) / a2;
+        }
     } else {
-        result.x1 = (-b + sqrt(discr)) / (2*a);
-        result.x2 = (-b - sqrt(discr)) / (2*a);
+        if (b != 0) {
+            Real r = c/b;   // XXX: Float, double, etc operation
+            result.x1 = r;
+            result.x2 = r;
+        } else {
+            result.valid = false;
+            return;
+        }
     }
+
     
     result.valid = true;
 }
@@ -57,16 +73,15 @@ Real intersectPlane(Vec3D l0, Vec3D l, Vec3D p0, Vec3D n) {
 
 /* Ray Tracer */
 int colorToRGB(Color& color) {
-    int rgb;
     // Valid values from 0 to 1.0
-    int r = clamp((int) color.x * 255, 0, 255);
-    int g = clamp((int) color.y * 255, 0, 255);
-    int b = clamp((int) color.z * 255, 0, 255);
+    int r = clamp((int) (color.x * 255.0), 0, 255);
+    int g = clamp((int) (color.y * 255.0), 0, 255);
+    int b = clamp((int) (color.z * 255.0), 0, 255);
 
-    rgb |= 0xFF000000;
-    rgb |= (r << 16) | 0x00FF0000;
-    rgb |= (g << 8) | 0x0000FF00;
-    rgb |= (b << 8) | 0x000000FF;
+    int rgb = 0xFF000000;
+    rgb += (r << 16) & 0x00FF0000;
+    rgb += (g << 8) & 0x0000FF00;
+    rgb += b & 0x000000FF;
     return rgb;
 }
 

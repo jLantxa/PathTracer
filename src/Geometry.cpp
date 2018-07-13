@@ -24,10 +24,10 @@
  * Definitions of Vector3D
 */
 template <typename T>
-Vector3D<T>::Vector3D(T x, T y, T z) : x(x), y(y), z(z) { }
+Vector3D<T>::Vector3D(T vx, T vy, T vz) : x(vx), y(vy), z(vz) { }
 
 template <typename T>
-Vector3D<T>::Vector3D(T x, T y) : x(x), y(y), z(0) { }
+Vector3D<T>::Vector3D(T vx, T vy) : x(vx), y(vy), z(0) { }
 
 template <typename T>
 Vector3D<T>::Vector3D() : x(0), y(0), z(0) { }

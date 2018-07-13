@@ -18,6 +18,7 @@
 
 #include "RayTracer.hpp"
 
+#include "Canvas.hpp"
 #include "Common.hpp"
 #include "Camera.hpp"
 #include "Objects.hpp"
@@ -25,57 +26,27 @@
 #include "Utils.hpp"
 
 #include <limits>
-
-/* Canvas */
-Canvas::Canvas() : width(0), height(0) {
-    initRGB(0, 0);
-}
-
-Canvas::Canvas(unsigned width, unsigned height) : width(width), height(height) {
-    initRGB(width, height);
-}
-
-void Canvas::freeRGB() {
-    for (int i = 0; i < width; i++) {
-        delete rgb[i];
-    }
-    delete rgb;
-}
-
-void Canvas::initRGB(unsigned w, unsigned h) {
-    if (rgb != nullptr) {
-        freeRGB();
-    }
-
-    rgb = new int*[w];
-    for (int i = 0; i < w; i++) {
-        rgb[i] = new int[h];
-    }
-}
-
-void Canvas::resize(unsigned newWidth, unsigned newHeight) {
-    initRGB(newWidth, newHeight);
-}
-
-int& Canvas::operator[](unsigned i) {
-    return *rgb[i];
-}
+#include <vector>
 
 RayTracer::RayTracer() { }
 
 RayTracer::~RayTracer() { }
 
-void RayTracer::renderScene(struct Scene& scene, Camera& camera, struct Canvas* canvas) {
+Canvas* RayTracer::renderScene(struct Scene& scene, Camera& camera) {
     unsigned width = camera.getWidth();
     unsigned height = camera.getHeight();
+
+    Canvas* canvas = new Canvas(width, height);
 
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             Ray ray = camera.getRayToPixel(i, j);
             Color color = castRayFromPixel(ray, scene);
-            canvas[i][j] = colorToRGB(color);
+            (*canvas)[i][j] = colorToRGB(color);
         }
     }
+
+    return canvas;
 }
 
 Color RayTracer::castRayFromPixel(Ray& ray, struct Scene& scene) {
@@ -85,7 +56,7 @@ Color RayTracer::castRayFromPixel(Ray& ray, struct Scene& scene) {
     Real closestIntersect = std::numeric_limits<Real>::infinity();
     for (Object3D* object : scene.objects) {
         Real intersect = object->intersect(ray);
-        if (intersect < closestIntersect) {
+        if (intersect > 0 && intersect < closestIntersect) {
             intersectObject = object;
             closestIntersect = intersect;
         }

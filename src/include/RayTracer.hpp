@@ -19,6 +19,7 @@
 #ifndef _INCLUDE_RAYTRACER_RAYTRACER_H_
 #define _INCLUDE_RAYTRACER_RAYTRACER_H_
 
+#include "Canvas.hpp"
 #include "Objects.hpp"
 #include "Light.hpp"
 #include "Camera.hpp"
@@ -31,29 +32,11 @@ struct Scene {
     std::vector<LightSource*> lights;
 };
 
-/* A container for an ARGB surface */
-class Canvas {
-    public:
-        Canvas();
-        Canvas(unsigned width, unsigned height);
-        virtual ~Canvas();
-        unsigned width;
-        unsigned height;
-
-        int& operator[](unsigned i);
-        void resize(unsigned newWidth, unsigned newHeight);
-
-    private:
-        int** rgb;
-        void freeRGB();
-        void initRGB(unsigned width, unsigned height);
-};
-
 class RayTracer {
     public:
         RayTracer();
         virtual ~RayTracer();
-        static void renderScene(struct Scene& scene, Camera& camera, struct Canvas* canvas);
+        static Canvas* renderScene(struct Scene& scene, Camera& camera);
     
     private:
         static Color castRayFromPixel(Ray& ray, struct Scene& scene);

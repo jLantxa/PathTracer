@@ -50,10 +50,6 @@ template <typename T> class Vector3D {
         Vector3D operator+(const Vector3D& v);
         Vector3D operator-(const Vector3D& v);
 
-        /** Pre-multiplication with a scalar */
-        template <typename U>
-        friend Vector3D<U> operator*(const U k, const Vector3D<U>& v);
-
         /** Dot product */
         T dot(const Vector3D& v);
         /** Cross product */
@@ -64,9 +60,9 @@ template <typename T> class Vector3D {
 };
 
 /** Pre-multiplication with a scalar */
-template <typename U>
-Vector3D<U> operator*(const U k, const Vector3D<U>& v) {
-    Vector3D<U> mult(k*v.x, k*v.y, k*v.z);
+template <typename T>
+Vector3D<T> operator*(const T k, const Vector3D<T>& v) {
+    Vector3D<T> mult(k*v.x, k*v.y, k*v.z);
     return mult;
 }
 
