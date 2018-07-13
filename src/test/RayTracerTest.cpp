@@ -18,6 +18,8 @@
 
 #include <SDL2/SDL.h>
 
+#include <iostream>
+
 #include "RayTracer.hpp"
 #include "Common.hpp"
 #include "Geometry.hpp"
@@ -119,10 +121,34 @@ void buildScene(struct Scene* scene) {
 }
 
 int main (int argc, char* argv[]) {
+    unsigned width, height;
+    float fov;
+
+    if (argc != 4) {
+        std::cout << "ERROR: Specify resolution and FOV" << std::endl;
+        return -1;
+    } else {
+        width = atoi(argv[1]);
+        height = atoi(argv[2]);
+        fov = atof(argv[3]);
+        if (width <= 0 || height <= 0) {
+            std::cout << "ERROR: Canvas cannot have null size." << std::endl;
+            return -1;
+        } else if (width*height > 1920 * 1080) {
+            std::cout << "ERROR: You specified a canvas of size " <<
+                width << "x" << height << "." << std::endl <<
+                "Please, use a lower resolution." << std::endl;
+            return -1;
+        } else if (fov <= 0 | fov >= 180) {
+            std::cout << "ERROR: Suported FOVs range from 0º to 180º." << std::endl;
+            return -1;
+        }
+    }
+
     Canvas* canvas;
     struct Scene scene;
 
-    Camera camera(640, 480, 90);
+    Camera camera(width, height, fov);
 
     buildScene(&scene);
     canvas = RayTracer::renderScene(scene, camera);
