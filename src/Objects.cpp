@@ -1,5 +1,5 @@
 /*
- * This source file is part of raytracer
+ * This source file is part of PathTracer
  *
  * Copyright 2018 Javier Lancha Vázquez
  *
@@ -70,9 +70,13 @@ Real Sphere::intersect(Ray& ray) {
     }
 }
 
+Vec3D Sphere::getNormal(Vec3D& hitPoint, Vec3D& hitDirection) {
+    return hitPoint - center;
+}
+
 /* Plane */
 Plane::Plane(Color color, Vec3D position, Vec3D normal) : Object3D(color),
-    position(position), normal(normal) { }
+    position(position), normal(normal.normalize()) { }
 
 Plane::~Plane() { }
 
@@ -82,6 +86,14 @@ Color Plane::getColor() {
 
 Real Plane::intersect(Ray& ray) {
     return intersectPlane(ray.getOrigin(), ray.getDirection(), position, normal);
+}
+
+Vec3D Plane::getNormal(Vec3D& hitPoint, Vec3D& hitDirection) {
+    if (hitDirection.dot(normal) < 0) {
+        return normal;
+    } else {
+        return normal.negative();
+    }
 }
 
 /* Triangle */
@@ -131,5 +143,13 @@ Real Triangle::intersect(Ray& ray) {
     } else {
         // Outside triangle
         return -std::numeric_limits<Real>::infinity();
+    }
+}
+
+Vec3D Triangle::getNormal(Vec3D& hitPoint, Vec3D& hitDirection) {
+    if (hitDirection.dot(normal) > 0) {
+        return normal;
+    } else {
+        return normal.negative();
     }
 }

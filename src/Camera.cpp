@@ -1,5 +1,5 @@
 /*
- * This source file is part of raytracer
+ * This source file is part of PathTracer
  *
  * Copyright 2018 Javier Lancha Vázquez
  *
@@ -16,13 +16,13 @@
  * limitations under the License.
 */
 
- #include "Common.hpp"
- #include "Camera.hpp"
+#include "Common.hpp"
+#include "Camera.hpp"
 
- #include "Geometry.hpp"
- #include "Light.hpp"
+#include "Geometry.hpp"
+#include "Light.hpp"
 
- #include <cmath>
+#include <cmath>
 
 Camera::Camera(unsigned width, unsigned height, float fov) :
         width(width),
@@ -73,10 +73,10 @@ float Camera::getAspectRatio() {
 
 
 Vec3D Camera::getVectorToPixel(unsigned i, unsigned j) {
-    Real x = (2 * ((i + 0.5) / width) - 1) * tan(fov/2);
-    Real y = (1 - 2*(j + 0.5) / height) * tan(fov/2)/aspectRatio;
-    Vec3D vector(x, y, -1);
-    return (vector - position).normalize();
+    Real right = (2 * ((i + 0.5) / width) - 1) * tan(fov/2);
+    Real up = (1 - 2*(j + 0.5) / height) * tan(fov/2)/aspectRatio;
+    Vec3D vector = w + right*u + up*v;
+    return (vector).normalize();
 }
 
 Ray Camera::getRayToPixel(unsigned i, unsigned j) {

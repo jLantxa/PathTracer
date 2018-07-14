@@ -1,5 +1,5 @@
 /*
- * This source file is part of raytracer
+ * This source file is part of PathTracer
  *
  * Copyright 2018 Javier Lancha Vázquez
  *
@@ -23,8 +23,6 @@
 #include "Geometry.hpp"
 #include "Light.hpp"
 
-typedef Vector3D<float> Color;
-
 /**
  * 3D Object base
  */
@@ -34,8 +32,18 @@ class Object3D {
         virtual ~Object3D();
 
         virtual Color getColor() = 0;
+        /**
+         * Returns the intersection point of the ray and the object
+         * as the distance from the ray's origin in the direction of the ray.
+        */
         virtual Real intersect(Ray& ray) = 0;
-    
+
+        /**
+         * Returns a vector normal to the object's surface in a given point
+         * and hit direction.
+        */
+        virtual Vec3D getNormal(Vec3D& hitPoint, Vec3D& hitDirection) = 0;
+
     protected:
         Color color;
 };
@@ -49,6 +57,7 @@ class Sphere : public Object3D {
 
         virtual Color getColor();
         virtual Real intersect(Ray& ray);
+        virtual Vec3D getNormal(Vec3D& hitPoint, Vec3D& hitDirection);
 
     private:
         Vec3D center;
@@ -63,6 +72,7 @@ class Plane : public Object3D {
 
         virtual Color getColor();
         virtual Real intersect(Ray& ray);
+        virtual Vec3D getNormal(Vec3D& hitPoint, Vec3D& hitDirection);
 
     private:
         Vec3D position;
@@ -78,6 +88,7 @@ class Triangle : public Object3D {
 
         virtual Color getColor();
         virtual Real intersect(Ray& ray);
+        virtual Vec3D getNormal(Vec3D& hitPoint, Vec3D& hitDirection);
 
     private:
         Vec3D A, B, C;

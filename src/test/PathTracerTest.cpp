@@ -1,5 +1,5 @@
 /*
- * This source file is part of raytracer
+ * This source file is part of PathTracer
  *
  * Copyright 2018 Javier Lancha Vázquez
  *
@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-#include "RayTracer.hpp"
+#include "PathTracer.hpp"
 #include "Common.hpp"
 #include "Geometry.hpp"
 #include "Objects.hpp"
@@ -36,7 +36,7 @@ void drawCanvas(Canvas* canvas) {
     SDL_Window* window = NULL;
     window = SDL_CreateWindow
     (
-        "Ray Tracer test",
+        "Path Tracer test",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         width,
@@ -53,11 +53,12 @@ void drawCanvas(Canvas* canvas) {
 
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
-            int rgb = (*canvas)[i][j];
-            int r = (rgb &0x00FF0000) >> 16;
-            int g = (rgb &0x0000FF00) >> 8;
-            int b = (rgb &0x000000FF);
-            SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+            uint32_t rgb = (*canvas)[i][j];
+            uint8_t a = (rgb &0xFF000000) >> 24;
+            uint8_t r = (rgb &0x00FF0000) >> 16;
+            uint8_t g = (rgb &0x0000FF00) >> 8;
+            uint8_t b = (rgb &0x000000FF);
+            SDL_SetRenderDrawColor(renderer, r, g, b, a);
             SDL_RenderDrawPoint(renderer, i, j);
         }
     }
@@ -65,7 +66,7 @@ void drawCanvas(Canvas* canvas) {
 
     SDL_RenderPresent(renderer);
 
-    SDL_Delay(3000) ;
+    SDL_Delay(5000);
 
     SDL_DestroyWindow(window);
     SDL_Quit();
@@ -83,14 +84,20 @@ Triangle* createTriangle(Color color, Vec3D& A, Vec3D& B, Vec3D& C) {
     return new Triangle(color, A, B, C);
 }
 
+LightSource* createLight(Vec3D& pos, Color color) {
+    return new LightSource(pos, color);
+}
+
+
+
 void buildScene(struct Scene* scene) {
     Color color;
     Vec3D v1, v2, v3;
     Real r;
 
+    r = 30;
     color.set(1, 0, 0);
-    v1.set(-60, 0, -200);
-    r = 25;
+    v1.set(-3*r, 0, -200);
     scene->objects.push_back(createSphere(color, v1, r));
 
     color.set(0, 1, 0);
@@ -98,39 +105,52 @@ void buildScene(struct Scene* scene) {
     scene->objects.push_back(createSphere(color, v1, r));
 
     color.set(0, 0, 1);
-    v1.set(60, 0, -200);
+    v1.set(3*r, 0, -200);
     scene->objects.push_back(createSphere(color, v1, r));
 
     color.set(0.75, 0.75, 0.75);
-    v1.set(0, -30, 0);
+    v1.set(0, -r, 0);
     v2.set(0, 1, 0);
     scene->objects.push_back(createPlane(color, v1, v2));
 
     color.set(0.75, 0, 0.6);
-    v1.set(-100, 0, 0);
+    v1.set(-4*r, 0, 0);
     v2.set(1, 0, 0);
     scene->objects.push_back(createPlane(color, v1, v2));
 
-    color.set(0.6, 0, 0.75);
-    v1.set(100, 0, 0);
+    color.set(0.75, 0, 0.6);
+    v1.set(4*r, 0, 0);
     v2.set(-1, 0, 0);
     scene->objects.push_back(createPlane(color, v1, v2));
 
-    color.set(0.6, 0.2, 0.75);
-    v1.set(0, 0, -300);
-    v2.set(0, -0.1, 1);
-    scene->objects.push_back(createPlane(color, v1, v2));
-
-    color.set(0.6, 0.2, 0.75);
-    v1.set(0, 0, 100);
-    v2.set(0, -0.1, 1);
+    color.set(0.75, 0.5, 0.6);
+    v1.set(0, 0, -400);
+    v2.set(0, 0, 1);
     scene->objects.push_back(createPlane(color, v1, v2));
 
     color.set(1.0, 0.6, 0.6);
     v1.set(-20, -30, -100);
     v2.set(20, -30, -100);
-    v3.set(0, 5, -150);
+    v3.set(0, 5, -90);
     scene->objects.push_back(createTriangle(color, v1, v2, v3));
+
+    r = 5;
+    color.set(0, 0.6, 1);
+    v1.set(-25, -30+r, -75);
+    scene->objects.push_back(createSphere(color, v1, r));
+
+    r = 10;
+    color.set(0, 1, 1);
+    v1.set(40, -30+r, -90);
+    scene->objects.push_back(createSphere(color, v1, r));
+
+    v1.set(50, 2*r, -200);
+    color.set(1.0, 1.0, 1.0);
+    scene->lights.push_back(createLight(v1, color));
+
+    v1.set(50, 2*r, -100);
+    color.set(1.0, 1.0, 1.0);
+    scene->lights.push_back(createLight(v1, color));
 }
 
 int main (int argc, char* argv[]) {
@@ -161,15 +181,17 @@ int main (int argc, char* argv[]) {
     Canvas* canvas;
     struct Scene scene;
 
-    Camera camera(width, height, fov);
-
+    PathTracer tracer(10);
+    Vec3D camPos(0, 100, -300);
+    Vec3D camFacing(0, -1, 1);
+    Camera camera(width, height, fov, camPos, camFacing);
     buildScene(&scene);
 
     std::cout << "Rendering scene..." << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
-    canvas = RayTracer::renderScene(scene, camera);
+    canvas = tracer.renderScene(scene, camera);
     auto elapsed = std::chrono::high_resolution_clock::now() - start;
-    float seconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
+    float seconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() / 1000.0;
     std::cout << "Finished rendering scene." << std::endl;
     std::cout << "Took " << seconds << "s" << std::endl;
 

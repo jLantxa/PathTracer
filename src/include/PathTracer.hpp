@@ -1,5 +1,5 @@
 /*
- * This source file is part of raytracer
+ * This source file is part of PathTracer
  *
  * Copyright 2018 Javier Lancha Vázquez
  *
@@ -19,6 +19,7 @@
 #ifndef _INCLUDE_RAYTRACER_RAYTRACER_H_
 #define _INCLUDE_RAYTRACER_RAYTRACER_H_
 
+#include "Common.hpp"
 #include "Canvas.hpp"
 #include "Objects.hpp"
 #include "Light.hpp"
@@ -30,16 +31,18 @@
 struct Scene {
     std::vector<Object3D*> objects;
     std::vector<LightSource*> lights;
+    Color backgroundColor;
 };
 
-class RayTracer {
+class PathTracer {
     public:
-        RayTracer();
-        virtual ~RayTracer();
-        static Canvas* renderScene(struct Scene& scene, Camera& camera);
+        PathTracer(unsigned depth);
+        virtual ~PathTracer();
+        Canvas* renderScene(struct Scene& scene, Camera& camera);
     
     private:
-        static Color castRayInScene(Ray& ray, struct Scene& scene);
+        Color traceRay(unsigned depth, Ray& ray, struct Scene& scene);
+        unsigned mMaxDepth;
 };
 
 #endif // _INCLUDE_RAYTRACER_RAYTRACER_H_

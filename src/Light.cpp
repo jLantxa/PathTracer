@@ -1,5 +1,5 @@
 /*
- * This source file is part of raytracer
+ * This source file is part of PathTracer
  *
  * Copyright 2018 Javier Lancha Vázquez
  *
@@ -16,13 +16,65 @@
  * limitations under the License.
 */
 
+#include <cstdint>
+
 #include "Common.hpp"
 #include "Light.hpp"
-
 #include "Geometry.hpp"
 
+Color::Color() : A(1.0), R(0.0), G(0.0), B(0.0) { }
+
+Color::Color(float r, float g, float b) : A(1.0), R(r), G(g), B(b) { }
+
+Color::Color(float a, float r, float g, float b) : A(a), R(r), G(g), B(b) { }
+
+Color::~Color() { }
+
+void Color::set(Color& color) {
+    A = color.A;
+    R = color.R;
+    G = color.G;
+    B = color.B;
+}
+
+void Color::setRGB(Color& color) {
+    R = color.R;
+    G = color.G;
+    B = color.B;
+}
+
+void Color::set(float r, float g, float b) {
+    R = r;
+    G = g;
+    B = b;
+}
+
+void Color::set(float a, float r, float g, float b) {
+    A = a;
+    R = r;
+    G = g;
+    B = b;
+}
+
+uint32_t Color::getARGB() {
+    uint32_t argb = 0x0;
+    // Valid values from 0 to 1.0
+    argb += (static_cast<int>(clamp(A) * 0xFF) << 24) & 0xFF000000;
+    argb += (static_cast<int>(clamp(R) * 0xFF) << 16) & 0x00FF0000;
+    argb += (static_cast<int>(clamp(G) * 0xFF) <<  8) & 0x0000FF00;
+    argb += (static_cast<int>(clamp(B) * 0xFF))       & 0x000000FF;
+    return argb;
+}
+
+float Color::clamp(float x) {
+    if (x < 0) return 0;
+    else if (x > 1) return 1;
+    else return x;
+}
+
+
 Ray::Ray(Vec3D o, Vec3D dir) :
-    origin(),
+    origin(o),
     direction(dir.normalize()) { }
 
 Ray::~Ray() {}
@@ -37,4 +89,18 @@ Vec3D Ray::getDirection() {
 
 Vec3D Ray::point(Real t) {
     return origin + t*direction;
+}
+
+
+LightSource::LightSource(Vec3D position, Color color) :
+    position(position), color(color) { }
+
+LightSource::~LightSource() { }
+
+Vec3D LightSource::getPosition() {
+    return position;
+}
+
+Color LightSource::getColor() {
+    return color;
 }

@@ -1,5 +1,5 @@
 /*
- * This source file is part of raytracer
+ * This source file is part of PathTracer
  *
  * Copyright 2018 Javier Lancha Vázquez
  *
@@ -19,11 +19,36 @@
 #ifndef _INCLUDE_RAYTRACER_LIGHT_H_
 #define _INCLUDE_RAYTRACER_LIGHT_H_
 
+#include <cstdint>
 #include "Common.hpp"
+#include "Geometry.hpp"
 
-/**
- * A ray of light with an origin and a direction
- */
+/** ARGB color class */
+class Color {
+    public:
+        float A, R, G, B;
+
+        Color();
+        Color(float r, float g, float b);
+        Color(float a, float r, float g, float b);
+        ~Color();
+
+        /** Copy argb components from a color object */
+        void set(Color& color);
+        /** Copy RGB components from a color object */
+        void setRGB(Color& color);
+        /** Set RGB components. A remains the same. */
+        void set(float r, float g, float b);
+        /** Set ARGB components */
+        void set(float a, float r, float g, float b);
+
+        /** Return ARGB value as int32_t */
+        uint32_t getARGB();
+
+    private:
+        float clamp(float x);
+};
+
 class Ray {
     public:
         /**
@@ -53,8 +78,15 @@ class Ray {
 
 class LightSource {
     public:
-        LightSource();
-        virtual ~LightSource();
+        LightSource(Vec3D position, Color color);
+        ~LightSource();
+
+        Vec3D getPosition();
+        Color getColor();
+    
+    private:
+        Vec3D position;
+        Color color;
 };
 
 #endif // _INCLUDE_RAYTRACER_LIGHT_H_

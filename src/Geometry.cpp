@@ -1,5 +1,5 @@
 /*
- * This source file is part of raytracer
+ * This source file is part of PathTracer
  *
  * Copyright 2018 Javier Lancha Vázquez
  *
@@ -78,6 +78,12 @@ template <typename T>
 Vector3D<T> Vector3D<T>::operator-(const Vector3D& v) {
     Vector3D<T> sum(x-v.x, y-v.y, z-v.z);
     return sum;
+}
+
+template <typename T>
+Vector3D<T> Vector3D<T>::negative() {
+    Vector3D<T> neg(-x, -y, -z);
+    return neg;
 }
 
 template <typename T>

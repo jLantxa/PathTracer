@@ -1,5 +1,5 @@
 /*
- * This source file is part of raytracer
+ * This source file is part of PathTracer
  *
  * Copyright 2018 Javier Lancha Vázquez
  *
@@ -32,7 +32,7 @@ template <typename T> class Vector3D {
         Vector3D(T x, T y);
         /** Creates a vector with zero components (0, 0, 0) */
         Vector3D();
-        virtual ~Vector3D();
+        ~Vector3D();
 
         /** Copy components from vector v */
         void set(const Vector3D& v);
@@ -49,6 +49,8 @@ template <typename T> class Vector3D {
         // Addition and subtraction
         Vector3D operator+(const Vector3D& v);
         Vector3D operator-(const Vector3D& v);
+
+        Vector3D negative();
 
         /** Dot product */
         T dot(const Vector3D& v);

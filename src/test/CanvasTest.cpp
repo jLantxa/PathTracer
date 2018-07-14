@@ -1,5 +1,5 @@
 /*
- * This source file is part of raytracer
+ * This source file is part of PathTracer
  *
  * Copyright 2018 Javier Lancha Vázquez
  *
@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-#include "RayTracer.hpp"
+#include "PathTracer.hpp"
 #include "Canvas.hpp"
 
 #include <assert.h>
@@ -54,7 +54,7 @@ int main (int argc, char* argv[]) {
     // Read
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
-            assert((*canvas)[i][j] == i^j);
+            assert((*canvas)[i][j] == (i^j));
         }
     }
 

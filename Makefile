@@ -9,7 +9,7 @@ BUILD=build
 TEST=$(SRC)/test
 
 TRACER_SOURCES += \
-	$(SRC)/RayTracer.cpp \
+	$(SRC)/PathTracer.cpp \
 	$(SRC)/Canvas.cpp \
 	$(SRC)/Objects.cpp \
 	$(SRC)/Camera.cpp \
@@ -39,5 +39,8 @@ AllUnitTests:
 	@make ObjectsTest
 	@echo "All tests compiled."
 
-RayTracerTest:
-	$(CC) -O3 -I $(INCL)/ $(TRACER_SOURCES) $(TEST)/RayTracerTest.cpp -o $(BUILD)/RayTracerTest -lSDL2
+PathTracerTest:
+	$(CC) -O3 -std=c++17 -I $(INCL)/ $(TRACER_SOURCES) $(TEST)/PathTracerTest.cpp -o $(BUILD)/PathTracerTest -lSDL2
+
+fire:
+	@./build/PathTracerTest 640, 480, 90
