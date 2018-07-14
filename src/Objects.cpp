@@ -52,12 +52,12 @@ Real Sphere::intersect(Ray& ray) {
     Deg2Solution t_sol;
     solveDeg2(a, b, c, t_sol);
     if (!t_sol.valid) {
-        return std::numeric_limits<Real>::infinity();
+        return -std::numeric_limits<Real>::infinity();
     }
 
     if (t_sol.x1 < 0) {
         if (t_sol.x2 < 0) {
-            return std::numeric_limits<Real>::infinity();
+            return -std::numeric_limits<Real>::infinity();
         } else {
             return t_sol.x2;
         }
@@ -82,4 +82,54 @@ Color Plane::getColor() {
 
 Real Plane::intersect(Ray& ray) {
     return intersectPlane(ray.getOrigin(), ray.getDirection(), position, normal);
+}
+
+/* Triangle */
+Triangle::Triangle(Color color, Vec3D pA, Vec3D pB, Vec3D pC) : Object3D(color),
+    A(pA), B(pB), C(pC)
+{
+    Vec3D AC = C - A;
+    Vec3D AB = B - A;
+    normal = AC.cross(AB).normalize();
+}
+
+Triangle::~Triangle() { }
+
+Color Triangle::getColor() {
+    return color;
+}
+
+Real Triangle::intersect(Ray& ray) {
+    Vec3D rayOrigin = ray.getOrigin();
+    Vec3D rayDirection = ray.getDirection();
+
+    Real tPlane = intersectPlane(rayOrigin, rayDirection, A, normal);
+    if (tPlane < 0 || tPlane == std::numeric_limits<Real>::infinity()) {
+        // No intersection with containing plane
+        return -std::numeric_limits<Real>::infinity();
+    }
+
+    // Test intersection inside triangle
+    Vec3D Q = ray.point(tPlane);
+
+    // [CA x QA]*n >= 0
+    Vec3D CA = C - A;
+    Vec3D QA = Q - A;
+    Real testA = CA.cross(QA).dot(normal);
+    // [AB x QB]*n >= 0
+    Vec3D AB = A - B;
+    Vec3D QB = Q - B;
+    Real testB = AB.cross(QB).dot(normal);
+    // [BC x QC]*n >= 0
+    Vec3D BC = B - C;
+    Vec3D QC = Q - C;
+    Real testC = BC.cross(QC).dot(normal);
+
+    if (testA >= 0 && testB >= 0 && testC >= 0) {
+        // Inside triangle
+        return tPlane;
+    } else {
+        // Outside triangle
+        return -std::numeric_limits<Real>::infinity();
+    }
 }

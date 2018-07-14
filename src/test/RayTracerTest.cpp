@@ -26,6 +26,9 @@
 #include "Objects.hpp"
 #include "Camera.hpp"
 
+#include <chrono>
+#include <iostream>
+
 void drawCanvas(Canvas* canvas) {
     unsigned width = canvas->getWidth();
     unsigned height = canvas->getHeight();
@@ -76,48 +79,58 @@ Plane* createPlane(Color color, Vec3D& center, Vec3D& normal) {
     return new Plane(color, center, normal);
 }
 
+Triangle* createTriangle(Color color, Vec3D& A, Vec3D& B, Vec3D& C) {
+    return new Triangle(color, A, B, C);
+}
+
 void buildScene(struct Scene* scene) {
     Color color;
-    Vec3D v1, v2;
+    Vec3D v1, v2, v3;
     Real r;
 
     color.set(1, 0, 0);
-    v1.set(-4, 0, -8);
-    r = 1.5;
+    v1.set(-60, 0, -200);
+    r = 25;
     scene->objects.push_back(createSphere(color, v1, r));
 
     color.set(0, 1, 0);
-    v1.set(0, 0, -8);
+    v1.set(0, 0, -200);
     scene->objects.push_back(createSphere(color, v1, r));
 
     color.set(0, 0, 1);
-    v1.set(4, 0, -8);
+    v1.set(60, 0, -200);
     scene->objects.push_back(createSphere(color, v1, r));
 
     color.set(0.75, 0.75, 0.75);
-    v1.set(0, -0.7, 0);
+    v1.set(0, -30, 0);
     v2.set(0, 1, 0);
     scene->objects.push_back(createPlane(color, v1, v2));
 
     color.set(0.75, 0, 0.6);
-    v1.set(-10, 0, 0);
+    v1.set(-100, 0, 0);
     v2.set(1, 0, 0);
     scene->objects.push_back(createPlane(color, v1, v2));
 
     color.set(0.6, 0, 0.75);
-    v1.set(10, 0, 0);
+    v1.set(100, 0, 0);
     v2.set(-1, 0, 0);
     scene->objects.push_back(createPlane(color, v1, v2));
 
     color.set(0.6, 0.2, 0.75);
-    v1.set(0, 0, -20);
-    v2.set(0, 0, 1);
+    v1.set(0, 0, -300);
+    v2.set(0, -0.1, 1);
     scene->objects.push_back(createPlane(color, v1, v2));
 
     color.set(0.6, 0.2, 0.75);
-    v1.set(0, 0, 20);
-    v2.set(0, 0, 1);
+    v1.set(0, 0, 100);
+    v2.set(0, -0.1, 1);
     scene->objects.push_back(createPlane(color, v1, v2));
+
+    color.set(1.0, 0.6, 0.6);
+    v1.set(-20, -30, -100);
+    v2.set(20, -30, -100);
+    v3.set(0, 5, -150);
+    scene->objects.push_back(createTriangle(color, v1, v2, v3));
 }
 
 int main (int argc, char* argv[]) {
@@ -151,7 +164,15 @@ int main (int argc, char* argv[]) {
     Camera camera(width, height, fov);
 
     buildScene(&scene);
+
+    std::cout << "Rendering scene..." << std::endl;
+    auto start = std::chrono::high_resolution_clock::now();
     canvas = RayTracer::renderScene(scene, camera);
+    auto elapsed = std::chrono::high_resolution_clock::now() - start;
+    float seconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
+    std::cout << "Finished rendering scene." << std::endl;
+    std::cout << "Took " << seconds << "s" << std::endl;
+
     drawCanvas(canvas);
     return 0;
 }

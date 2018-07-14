@@ -69,4 +69,19 @@ class Plane : public Object3D {
         Vec3D normal;
 };
 
+/** A triangle object derived from the Object3D base */
+class Triangle : public Object3D {
+    public:
+        /** A colour and vertices A, B and C */
+        Triangle(Color color, Vec3D A, Vec3D B, Vec3D C);
+        virtual ~Triangle();
+
+        virtual Color getColor();
+        virtual Real intersect(Ray& ray);
+
+    private:
+        Vec3D A, B, C;
+        Vec3D normal;
+};
+
 #endif // _INCLUDE_RAYTRACER_OBJECTS_H_

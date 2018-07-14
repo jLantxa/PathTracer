@@ -41,7 +41,7 @@ Canvas* RayTracer::renderScene(struct Scene& scene, Camera& camera) {
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             Ray ray = camera.getRayToPixel(i, j);
-            Color color = castRayFromPixel(ray, scene);
+            Color color = castRayInScene(ray, scene);
             (*canvas)[i][j] = colorToRGB(color);
         }
     }
@@ -49,7 +49,7 @@ Canvas* RayTracer::renderScene(struct Scene& scene, Camera& camera) {
     return canvas;
 }
 
-Color RayTracer::castRayFromPixel(Ray& ray, struct Scene& scene) {
+Color RayTracer::castRayInScene(Ray& ray, struct Scene& scene) {
     Object3D* intersectObject = nullptr;
     Color color(0, 0, 0);   // Black background
 

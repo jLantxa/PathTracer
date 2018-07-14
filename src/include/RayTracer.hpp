@@ -39,7 +39,7 @@ class RayTracer {
         static Canvas* renderScene(struct Scene& scene, Camera& camera);
     
     private:
-        static Color castRayFromPixel(Ray& ray, struct Scene& scene);
+        static Color castRayInScene(Ray& ray, struct Scene& scene);
 };
 
 #endif // _INCLUDE_RAYTRACER_RAYTRACER_H_

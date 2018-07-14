@@ -40,4 +40,4 @@ AllUnitTests:
 	@echo "All tests compiled."
 
 RayTracerTest:
-	$(CC) -I $(INCL)/ $(TRACER_SOURCES) $(TEST)/RayTracerTest.cpp -o $(BUILD)/RayTracerTest -lSDL2
+	$(CC) -O3 -I $(INCL)/ $(TRACER_SOURCES) $(TEST)/RayTracerTest.cpp -o $(BUILD)/RayTracerTest -lSDL2

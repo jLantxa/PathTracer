@@ -64,7 +64,7 @@ void solveDeg2(Real a, Real b, Real c, struct Deg2Solution& result) {
 Real intersectPlane(Vec3D l0, Vec3D l, Vec3D p0, Vec3D n) {
     Real den = n.dot(l);
     if (den == 0) {
-        return std::numeric_limits<Real>::infinity();
+        return -std::numeric_limits<Real>::infinity();
     }
     Real num = n.dot(p0 - l0);
     Real t = num/den;
