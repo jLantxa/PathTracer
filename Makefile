@@ -40,7 +40,7 @@ AllUnitTests:
 	@echo "All tests compiled."
 
 PathTracerTest:
-	$(CC) -O3 -std=c++17 -I $(INCL)/ $(TRACER_SOURCES) $(TEST)/PathTracerTest.cpp -o $(BUILD)/PathTracerTest -lSDL2 -DRAY_TRACING
+	$(CC) -O3 -std=c++17 -I $(INCL)/ $(TRACER_SOURCES) $(TEST)/PathTracerTest.cpp -o $(BUILD)/PathTracerTest -DRAY_TRACING
 
 fire:
 	@./build/PathTracerTest 640, 480, 90

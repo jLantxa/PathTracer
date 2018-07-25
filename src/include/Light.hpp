@@ -42,6 +42,11 @@ class Color {
         /** Set ARGB components */
         void set(float a, float r, float g, float b);
 
+        uint8_t intA();
+        uint8_t intR();
+        uint8_t intG();
+        uint8_t intB();
+
         /** Return ARGB value as int32_t */
         uint32_t getARGB();
 

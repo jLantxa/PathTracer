@@ -19,6 +19,8 @@
 #ifndef _INCLUDE_RAYTRACER_CANVAS_H_
 #define _INCLUDE_RAYTRACER_CANVAS_H_
 
+#include "Light.hpp"
+
 /* A container for an ARGB surface */
 class Canvas {
     public:
@@ -28,13 +30,14 @@ class Canvas {
         unsigned getWidth();
         unsigned getHeight();
 
-        int* operator[](unsigned i);
+        Color* operator[](unsigned i);
+        void toPPM(const char* filename);
 
     private:
         unsigned width;
         unsigned height;
 
-        int** rgb;
+        Color** color;
 };
 
 #endif // _INCLUDE_RAYTRACER_CANVAS_H_

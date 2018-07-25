@@ -47,7 +47,7 @@ Canvas* PathTracer::renderScene(struct Scene& scene, Camera& camera) {
         for (int j = 0; j < height; j++) {
             Ray ray = camera.getRayToPixel(i, j);
             Color color = traceRay(0, ray, scene);
-            (*canvas)[i][j] = color.getARGB();
+            (*canvas)[i][j] = color;
         }
     }
 

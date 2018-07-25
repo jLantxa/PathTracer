@@ -66,6 +66,22 @@ uint32_t Color::getARGB() {
     return argb;
 }
 
+uint8_t Color::intA() {
+    return static_cast<uint8_t>(clamp(A) * 0xFF);
+}
+
+uint8_t Color::intR() {
+    return static_cast<uint8_t>(clamp(R) * 0xFF);
+}
+
+uint8_t Color::intG() {
+    return static_cast<uint8_t>(clamp(G) * 0xFF);
+}
+
+uint8_t Color::intB() {
+    return static_cast<uint8_t>(clamp(B) * 0xFF);
+}
+
 float Color::clamp(float x) {
     if (x < 0) return 0;
     else if (x > 1) return 1;

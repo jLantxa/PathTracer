@@ -16,8 +16,6 @@
  * limitations under the License.
 */
 
-#include <SDL2/SDL.h>
-
 #include <iostream>
 
 #include "PathTracer.hpp"
@@ -28,49 +26,6 @@
 
 #include <chrono>
 #include <iostream>
-
-void drawCanvas(Canvas* canvas) {
-    unsigned width = canvas->getWidth();
-    unsigned height = canvas->getHeight();
-
-    SDL_Window* window = NULL;
-    window = SDL_CreateWindow
-    (
-        "Path Tracer test",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        width,
-        height,
-        SDL_WINDOW_SHOWN
-    );
-
-    SDL_Renderer* renderer = NULL;
-    renderer =  SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-    // Set render color to red (background will be rendered in this color)
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
-
-    for (int i = 0; i < width; i++) {
-        for (int j = 0; j < height; j++) {
-            uint32_t rgb = (*canvas)[i][j];
-            uint8_t a = (rgb &0xFF000000) >> 24;
-            uint8_t r = (rgb &0x00FF0000) >> 16;
-            uint8_t g = (rgb &0x0000FF00) >> 8;
-            uint8_t b = (rgb &0x000000FF);
-            SDL_SetRenderDrawColor(renderer, r, g, b, a);
-            SDL_RenderDrawPoint(renderer, i, j);
-        }
-    }
-
-
-    SDL_RenderPresent(renderer);
-
-    SDL_Delay(5000);
-
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-}
 
 Sphere* createSphere(Color color, Vec3D& center, Real radius) {
     return new Sphere(color, center, radius);
@@ -195,6 +150,6 @@ int main (int argc, char* argv[]) {
     std::cout << "Finished rendering scene." << std::endl;
     std::cout << "Took " << seconds << "s" << std::endl;
 
-    drawCanvas(canvas);
+    canvas->toPPM("pathTracerTest.ppm");
     return 0;
 }

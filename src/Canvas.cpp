@@ -17,19 +17,22 @@
 */
 
 #include "Canvas.hpp"
+#include "Light.hpp"
+
+#include <stdio.h>
 
 Canvas::Canvas(unsigned width, unsigned height) : width(width), height(height) {
-    rgb = new int*[width];
+    color = new Color*[width];
     for (int i = 0; i < width; i++) {
-        rgb[i] = new int[height];
+        color[i] = new Color[height];
     }
 }
 
 Canvas::~Canvas() {
     for (int i = 0; i < width; i++) {
-        delete rgb[i];
+        delete color[i];
     }
-    delete rgb;
+    delete color;
 }
 
 unsigned Canvas::getWidth() {
@@ -40,6 +43,18 @@ unsigned Canvas::getHeight() {
     return height;
 }
 
-int* Canvas::operator[](unsigned i) {
-    return rgb[i];
+Color* Canvas::operator[](unsigned i) {
+    return color[i];
+}
+
+void Canvas::toPPM(const char* filename) {
+    FILE *f = fopen(filename, "w");
+    fprintf(f, "P3\n%d %d\n%d\n", width, height, 255);
+    for (int i = 0; i < height; i++)  {
+        for (int j = 0; j < width; j++) {
+            Color c = color[j][i];
+            fprintf(f,"%d %d %d ", c.intR(), c.intG(), c.intB());
+        }
+    }
+    fclose(f);
 }
