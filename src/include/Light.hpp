@@ -55,7 +55,7 @@ class Ray {
          * A source point and the direction of propagation.
          * If any of the vectors are not unit they will be normalised.
          */
-        Ray(Vec3D origin, Vec3D direction);
+        Ray(Vec3D origin_v, Vec3D direction_v);
         virtual ~Ray();
 
         /**
@@ -72,20 +72,20 @@ class Ray {
 
     private:
         /** Origin vector */
-        Vec3D origin;
-        Vec3D direction;
+        Vec3D mOrigin_v;
+        Vec3D mDirection_v;
 };
 
 class LightSource {
     public:
-        LightSource(Vec3D position, Color color);
+        LightSource(Vec3D position_v, Color color);
         ~LightSource();
 
         Vec3D getPosition();
         Color getColor();
     
     private:
-        Vec3D position;
+        Vec3D mPosition_v;
         Color color;
 };
 

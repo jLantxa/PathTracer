@@ -74,52 +74,35 @@ Color PathTracer::traceRay(unsigned depth, Ray& cameraRay, struct Scene& scene) 
         return Color(0, 0, 0);
     }
 
-#define PATH_TRACE 0
-#if PATH_TRACE == 1
-    /* TODO: Recursive ray tracer
-     *
-     * Calculate accumulated light:
-     *      - Ambient light
-     *      - Own emission
-     *      - Diffuse component
-     *      - Specular component
-     *
-     * If object is coherently reflective
-     *      + Trace reflection ray of order d+1
-     *
-     * If object is coherently refractive
-     *      + Trace refraction ray of order d+1
-     *
-     * Return  all colour contributions
-    */
+#ifndef RAY_TRACING
 
     Color color;
-    Color objectColor = intersectObject->getColor();
-    color.set(objectColor);
+
+    // TODO: Algorithm here :)
 
     return color;
 
-#else // Ray tracer
+#else // Ray tracer. Maintained only for testing
     Color color;
     Color objectColor = intersectObject->getColor();
     color.set(objectColor);
 
-    Vec3D intersectPoint = cameraRay.point(t_intersect);
-    Vec3D intersectDirection = cameraRay.getDirection();
-    intersectPoint.set(intersectPoint + ACCURACY*intersectObject->getNormal(intersectPoint, intersectDirection));
+    Vec3D intersectPoint_v = cameraRay.point(t_intersect);
+    Vec3D intersectDirection_v = cameraRay.getDirection();
+    intersectPoint_v.set(intersectPoint_v + ACCURACY*intersectObject->getNormal(intersectPoint_v, intersectDirection_v));
 
     for (LightSource* lightSource : scene.lights) {
         bool inShadow = false;
         Color lightColor = lightSource->getColor();
-        Vec3D toLight = lightSource->getPosition() - intersectPoint;
-        Ray shadowRay(intersectPoint, toLight);
+        Vec3D toLight_v = lightSource->getPosition() - intersectPoint_v;
+        Ray shadowRay(intersectPoint_v, toLight_v);
 
         for (Object3D* sObject : scene.objects) {
             Real t = sObject->intersect(shadowRay);
-            Vec3D ori = shadowRay.getOrigin();
-            Vec3D dir = shadowRay.getDirection();
+            Vec3D ori_v = shadowRay.getOrigin();
+            Vec3D dir_v = shadowRay.getDirection();
 
-            if (t > 0 && t < toLight.dist()) {
+            if (t > 0 && t < toLight_v.dist()) {
                 inShadow = true;
                 break;
             }

@@ -73,32 +73,32 @@ float Color::clamp(float x) {
 }
 
 
-Ray::Ray(Vec3D o, Vec3D dir) :
-    origin(o),
-    direction(dir.normalize()) { }
+Ray::Ray(Vec3D origin_m, Vec3D dir_v) :
+    mOrigin_v(origin_m),
+    mDirection_v(dir_v.normalize()) { }
 
 Ray::~Ray() {}
 
 Vec3D Ray::getOrigin() {
-    return origin;
+    return mOrigin_v;
 }
 
 Vec3D Ray::getDirection() {
-    return direction;
+    return mDirection_v;
 }
 
 Vec3D Ray::point(Real t) {
-    return origin + t*direction;
+    return mOrigin_v + t*mDirection_v;
 }
 
 
-LightSource::LightSource(Vec3D position, Color color) :
-    position(position), color(color) { }
+LightSource::LightSource(Vec3D position_v, Color color) :
+    mPosition_v(position_v), color(color) { }
 
 LightSource::~LightSource() { }
 
 Vec3D LightSource::getPosition() {
-    return position;
+    return mPosition_v;
 }
 
 Color LightSource::getColor() {

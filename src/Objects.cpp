@@ -33,8 +33,8 @@ Object3D::~Object3D() { }
 
 
 /* Sphere */
-Sphere::Sphere(Color color, Vec3D center, Real radius) : Object3D(color),
-    center(center), radius(radius) { }
+Sphere::Sphere(Color color, Vec3D center_V, Real radius) : Object3D(color),
+    mCenter_v(center_V), radius(radius) { }
 
 Sphere::~Sphere() { }
 
@@ -43,11 +43,11 @@ Color Sphere::getColor() {
 }
 
 Real Sphere::intersect(Ray& ray) {
-    Vec3D dir = ray.getDirection();
-    Vec3D oc = ray.getOrigin() - center;
-    Real a = dir.dot(dir);
-    Real b = 2 * dir.dot(oc);
-    Real c = oc.dot(oc) - radius*radius;
+    Vec3D dir_v = ray.getDirection();
+    Vec3D oc_v = ray.getOrigin() - mCenter_v;
+    Real a = dir_v.dot(dir_v);
+    Real b = 2 * dir_v.dot(oc_v);
+    Real c = oc_v.dot(oc_v) - radius*radius;
 
     Deg2Solution t_sol;
     solveDeg2(a, b, c, t_sol);
@@ -70,13 +70,13 @@ Real Sphere::intersect(Ray& ray) {
     }
 }
 
-Vec3D Sphere::getNormal(Vec3D& hitPoint, Vec3D& hitDirection) {
-    return hitPoint - center;
+Vec3D Sphere::getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    return hitPoint_v - mCenter_v;
 }
 
 /* Plane */
-Plane::Plane(Color color, Vec3D position, Vec3D normal) : Object3D(color),
-    position(position), normal(normal.normalize()) { }
+Plane::Plane(Color color, Vec3D position_v, Vec3D normal_v) : Object3D(color),
+    mPosition_v(position_v), mNormal_v(normal_v.normalize()) { }
 
 Plane::~Plane() { }
 
@@ -85,24 +85,24 @@ Color Plane::getColor() {
 }
 
 Real Plane::intersect(Ray& ray) {
-    return intersectPlane(ray.getOrigin(), ray.getDirection(), position, normal);
+    return intersectPlane(ray.getOrigin(), ray.getDirection(), mPosition_v, mNormal_v);
 }
 
-Vec3D Plane::getNormal(Vec3D& hitPoint, Vec3D& hitDirection) {
-    if (hitDirection.dot(normal) < 0) {
-        return normal;
+Vec3D Plane::getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    if (hitDirection_v.dot(mNormal_v) < 0) {
+        return mNormal_v;
     } else {
-        return normal.negative();
+        return mNormal_v.negative();
     }
 }
 
 /* Triangle */
-Triangle::Triangle(Color color, Vec3D pA, Vec3D pB, Vec3D pC) : Object3D(color),
-    A(pA), B(pB), C(pC)
+Triangle::Triangle(Color color, Vec3D A_v, Vec3D B_v, Vec3D C_v) : Object3D(color),
+    mA_v(A_v), mB_v(B_v), mC_v(C_v)
 {
-    Vec3D AC = C - A;
-    Vec3D AB = B - A;
-    normal = AC.cross(AB).normalize();
+    Vec3D AC_v = mC_v - mA_v;
+    Vec3D AB_v = mB_v - mA_v;
+    mNormal_v = AC_v.cross(AB_v).normalize();
 }
 
 Triangle::~Triangle() { }
@@ -112,30 +112,30 @@ Color Triangle::getColor() {
 }
 
 Real Triangle::intersect(Ray& ray) {
-    Vec3D rayOrigin = ray.getOrigin();
-    Vec3D rayDirection = ray.getDirection();
+    Vec3D rayOrigin_v = ray.getOrigin();
+    Vec3D rayDirection_v = ray.getDirection();
 
-    Real tPlane = intersectPlane(rayOrigin, rayDirection, A, normal);
+    Real tPlane = intersectPlane(rayOrigin_v, rayDirection_v, mA_v, mNormal_v);
     if (tPlane < 0 || tPlane == std::numeric_limits<Real>::infinity()) {
         // No intersection with containing plane
         return -std::numeric_limits<Real>::infinity();
     }
 
     // Test intersection inside triangle
-    Vec3D Q = ray.point(tPlane);
+    Vec3D Q_v = ray.point(tPlane);
 
     // [CA x QA]*n >= 0
-    Vec3D CA = C - A;
-    Vec3D QA = Q - A;
-    Real testA = CA.cross(QA).dot(normal);
+    Vec3D CA_v = mC_v - mA_v;
+    Vec3D QA_v = Q_v - mA_v;
+    Real testA = CA_v.cross(QA_v).dot(mNormal_v);
     // [AB x QB]*n >= 0
-    Vec3D AB = A - B;
-    Vec3D QB = Q - B;
-    Real testB = AB.cross(QB).dot(normal);
+    Vec3D AB_v = mA_v - mB_v;
+    Vec3D QB_v = Q_v - mB_v;
+    Real testB = AB_v.cross(QB_v).dot(mNormal_v);
     // [BC x QC]*n >= 0
-    Vec3D BC = B - C;
-    Vec3D QC = Q - C;
-    Real testC = BC.cross(QC).dot(normal);
+    Vec3D BC_v = mB_v - mC_v;
+    Vec3D QC_v = Q_v - mC_v;
+    Real testC = BC_v.cross(QC_v).dot(mNormal_v);
 
     if (testA >= 0 && testB >= 0 && testC >= 0) {
         // Inside triangle
@@ -146,10 +146,10 @@ Real Triangle::intersect(Ray& ray) {
     }
 }
 
-Vec3D Triangle::getNormal(Vec3D& hitPoint, Vec3D& hitDirection) {
-    if (hitDirection.dot(normal) > 0) {
-        return normal;
+Vec3D Triangle::getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    if (hitDirection_v.dot(mNormal_v) < 0) {
+        return mNormal_v;
     } else {
-        return normal.negative();
+        return mNormal_v.negative();
     }
 }

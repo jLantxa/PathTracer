@@ -42,7 +42,7 @@ class Object3D {
          * Returns a vector normal to the object's surface in a given point
          * and hit direction.
         */
-        virtual Vec3D getNormal(Vec3D& hitPoint, Vec3D& hitDirection) = 0;
+        virtual Vec3D getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) = 0;
 
     protected:
         Color color;
@@ -52,47 +52,47 @@ class Object3D {
 /** A sphere object derived from the Object3D base */
 class Sphere : public Object3D {
     public:
-        Sphere(Color color, Vec3D center, Real radius);
+        Sphere(Color color, Vec3D center_v, Real radius);
         virtual ~Sphere();
 
         virtual Color getColor();
         virtual Real intersect(Ray& ray);
-        virtual Vec3D getNormal(Vec3D& hitPoint, Vec3D& hitDirection);
+        virtual Vec3D getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
 
     private:
-        Vec3D center;
+        Vec3D mCenter_v;
         Real radius;
 };
 
 /** A plane object derived from the Object3D base */
 class Plane : public Object3D {
     public:
-        Plane(Color color, Vec3D position, Vec3D normal);
+        Plane(Color color, Vec3D position_v, Vec3D normal_v);
         virtual ~Plane();
 
         virtual Color getColor();
         virtual Real intersect(Ray& ray);
-        virtual Vec3D getNormal(Vec3D& hitPoint, Vec3D& hitDirection);
+        virtual Vec3D getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
 
     private:
-        Vec3D position;
-        Vec3D normal;
+        Vec3D mPosition_v;
+        Vec3D mNormal_v;
 };
 
 /** A triangle object derived from the Object3D base */
 class Triangle : public Object3D {
     public:
         /** A colour and vertices A, B and C */
-        Triangle(Color color, Vec3D A, Vec3D B, Vec3D C);
+        Triangle(Color color, Vec3D A_v, Vec3D B_v, Vec3D C_v);
         virtual ~Triangle();
 
         virtual Color getColor();
         virtual Real intersect(Ray& ray);
-        virtual Vec3D getNormal(Vec3D& hitPoint, Vec3D& hitDirection);
+        virtual Vec3D getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
 
     private:
-        Vec3D A, B, C;
-        Vec3D normal;
+        Vec3D mA_v, mB_v, mC_v;
+        Vec3D mNormal_v;
 };
 
 #endif // _INCLUDE_RAYTRACER_OBJECTS_H_
