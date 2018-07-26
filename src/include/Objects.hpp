@@ -42,8 +42,16 @@ class Object3D {
          * Returns a vector normal to the object's surface in a given point
          * and hit direction.
         */
-        virtual Vec3D getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) = 0;
+        virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) = 0;
 
+        /**
+         * Returns a vector normal to the object's surface in a given point
+         * facing out of the object
+        */
+        virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) = 0;
+
+        // TODO: Made public for testing
+        struct Material material;
     protected:
         Color color;
 };
@@ -57,7 +65,8 @@ class Sphere : public Object3D {
 
         virtual Color getColor();
         virtual Real intersect(Ray& ray);
-        virtual Vec3D getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
+        virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
+        virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
 
     private:
         Vec3D mCenter_v;
@@ -72,7 +81,8 @@ class Plane : public Object3D {
 
         virtual Color getColor();
         virtual Real intersect(Ray& ray);
-        virtual Vec3D getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
+        virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
+        virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
 
     private:
         Vec3D mPosition_v;
@@ -88,7 +98,8 @@ class Triangle : public Object3D {
 
         virtual Color getColor();
         virtual Real intersect(Ray& ray);
-        virtual Vec3D getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
+        virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
+        virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
 
     private:
         Vec3D mA_v, mB_v, mC_v;

@@ -94,4 +94,8 @@ class LightSource {
         Color color;
 };
 
+struct Material {
+    float emission = 0;
+};
+
 #endif // _INCLUDE_RAYTRACER_LIGHT_H_

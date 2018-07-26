@@ -70,7 +70,16 @@ Real Sphere::intersect(Ray& ray) {
     }
 }
 
-Vec3D Sphere::getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+Vec3D Sphere::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    Vec3D surfNormal = getSurfaceNormal(hitPoint_v, hitDirection_v);
+    if (hitDirection_v.dot(surfNormal) < 0) {
+        return surfNormal;
+    } else {
+        return surfNormal.negative();
+    }
+}
+
+Vec3D Sphere::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
     return hitPoint_v - mCenter_v;
 }
 
@@ -88,7 +97,7 @@ Real Plane::intersect(Ray& ray) {
     return intersectPlane(ray.getOrigin(), ray.getDirection(), mPosition_v, mNormal_v);
 }
 
-Vec3D Plane::getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+Vec3D Plane::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
     if (hitDirection_v.dot(mNormal_v) < 0) {
         return mNormal_v;
     } else {
@@ -96,7 +105,13 @@ Vec3D Plane::getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
     }
 }
 
-/* Triangle */
+Vec3D Plane::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    return mNormal_v;
+}
+
+/* Triangle
+ * Surface normal depends on the order of (A, B, C)
+*/
 Triangle::Triangle(Color color, Vec3D A_v, Vec3D B_v, Vec3D C_v) : Object3D(color),
     mA_v(A_v), mB_v(B_v), mC_v(C_v)
 {
@@ -146,10 +161,14 @@ Real Triangle::intersect(Ray& ray) {
     }
 }
 
-Vec3D Triangle::getNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+Vec3D Triangle::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
     if (hitDirection_v.dot(mNormal_v) < 0) {
         return mNormal_v;
     } else {
         return mNormal_v.negative();
     }
+}
+
+Vec3D Triangle::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    return mNormal_v;
 }

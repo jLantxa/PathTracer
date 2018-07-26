@@ -18,9 +18,16 @@
 
 #include "Utils.hpp"
 #include "Common.hpp"
+#include "Geometry.hpp"
+#include "Light.hpp"
 
+#include <stdlib.h>
+#include <cstdint>
 #include <cmath>
 #include <limits>
+
+#include <stdio.h>
+#include "test/TestCommon.hpp"
 
 /** Calculate discriminant b^2 - 4ac */
 inline Real discriminant(Real a, Real b, Real c) {
@@ -69,4 +76,24 @@ Real intersectPlane(Vec3D l0, Vec3D l, Vec3D p0, Vec3D n) {
     Real num = n.dot(p0 - l0);
     Real t = num/den;
     return t;
+}
+
+Vec3D sampleHemisphere(Vec3D& normal, uint16_t* Xi) {
+    double phi = 2 * M_PI * erand48(Xi);
+    double r = erand48(Xi);
+    double rs = sqrt(r);
+    double rs1 = sqrt(1-r);
+
+    Vec3D w = normal.normalize();
+    Vec3D rand_v = (w.cross(Vec3D(0, 0, 1)).dist() > 0.1)?
+        Vec3D(0, 0, 1) : Vec3D(1, 1, 0);
+
+    Vec3D u = w.cross(rand_v);
+    Vec3D v = w.cross(u);
+    Vec3D sample_v =
+        static_cast<Real>(cos(phi)*rs)*u +
+        static_cast<Real>(sin(phi)*rs)*v +
+        static_cast<Real>(rs1)*w;
+
+    return sample_v;
 }

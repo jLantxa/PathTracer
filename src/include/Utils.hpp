@@ -23,6 +23,8 @@
 #include "Geometry.hpp"
 #include "Objects.hpp"
 
+#include <vector>
+
 /** Calculate discriminant b^2 - 4ac */
 Real discriminant(Real a, Real b, Real c);
 
@@ -35,5 +37,7 @@ struct Deg2Solution {
 void solveDeg2(Real a, Real b, Real c, struct Deg2Solution& result);
 
 Real intersectPlane(Vec3D l0, Vec3D l, Vec3D p0, Vec3D n);
+
+Vec3D sampleHemisphere(Vec3D& normal, uint16_t* Xi);
 
 #endif // _INCLUDE_RAYTRACER_UTILS_H_

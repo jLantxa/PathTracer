@@ -25,6 +25,7 @@
 #include "Light.hpp"
 #include "Camera.hpp"
 
+#include <cstdint>
 #include <vector>
 
 /** A container of objects and light sources */
@@ -38,11 +39,15 @@ class PathTracer {
     public:
         PathTracer(unsigned depth);
         virtual ~PathTracer();
-        Canvas* renderScene(struct Scene& scene, Camera& camera);
+        Canvas* renderScene(unsigned spp, struct Scene& scene, Camera& camera);
     
     private:
-        Color traceRay(unsigned depth, Ray& ray, struct Scene& scene);
+        Vec3D traceRay(unsigned depth, Ray& ray, struct Scene& scene);
+        Object3D* intersect(Ray& ray, Scene& scene, Real& t);
         unsigned mMaxDepth;
+
+        // Random seed for erand48
+        uint16_t Xi[3];
 };
 
 #endif // _INCLUDE_RAYTRACER_RAYTRACER_H_

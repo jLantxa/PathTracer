@@ -64,6 +64,9 @@ T Vector3D<T>::dist() {
 template <typename T>
 Vector3D<T> Vector3D<T>::normalize() {
     T norm = dist();
+    if (norm == 0) {
+        return Vector3D(0, 0, 0);
+    }
     Vector3D normalized(x/norm, y/norm, z/norm);
     return normalized;
 }
@@ -78,6 +81,12 @@ template <typename T>
 Vector3D<T> Vector3D<T>::operator-(const Vector3D& v) {
     Vector3D<T> sum(x-v.x, y-v.y, z-v.z);
     return sum;
+}
+
+template <typename T>
+Vector3D<T> Vector3D<T>::operator*(const Vector3D& v) {
+    Vector3D<T> mult(x*v.x, y*v.y, z*v.z);
+    return mult;
 }
 
 template <typename T>

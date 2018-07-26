@@ -28,7 +28,7 @@
 #include <limits>
 #include <vector>
 
-#include <iostream>
+#include <stdio.h>
 
 // TODO: This value is completely random
 Real ACCURACY = 0.0001;
@@ -37,85 +37,69 @@ PathTracer::PathTracer(unsigned depth) : mMaxDepth(depth) { }
 
 PathTracer::~PathTracer() { }
 
-Canvas* PathTracer::renderScene(struct Scene& scene, Camera& camera) {
+Canvas* PathTracer::renderScene(unsigned spp , struct Scene& scene, Camera& camera) {
     unsigned width = camera.getWidth();
     unsigned height = camera.getHeight();
 
     Canvas* canvas = new Canvas(width, height);
 
-    for (int i = 0; i < width; i++) {
-        for (int j = 0; j < height; j++) {
-            Ray ray = camera.getRayToPixel(i, j);
-            Color color = traceRay(0, ray, scene);
-            (*canvas)[i][j] = color;
+    int cnt = 0;
+    #pragma omp parallel for schedule(static) shared(cnt)
+    for (int j = 0; j < height; j++) {
+        printf("Rendering: %.2f\n", 100.0*(cnt)/(width*height));
+        for (int i = 0; i < width; i++) {
+            cnt++;
+            Vec3D acc;
+            for (int n = 0; n < spp; n++) {
+                Ray ray = camera.getRayToPixel(i, j);
+                Vec3D rad = traceRay(0, ray, scene);
+                acc = acc + rad;
+            }
+            (*canvas)[i][j] = Color(acc.x/spp, acc.y/spp, acc.z/spp);
         }
     }
 
     return canvas;
 }
 
-Color PathTracer::traceRay(unsigned depth, Ray& cameraRay, struct Scene& scene) {
-    if (depth > mMaxDepth) {
-        return Color(0, 0, 0);
-    }
-
-    Object3D* intersectObject = nullptr;
-
-    Real t_intersect = std::numeric_limits<Real>::infinity();
+Object3D* PathTracer::intersect(Ray& ray, Scene& scene, Real& t) {
+    Object3D* object_tmp = nullptr;
+    t = std::numeric_limits<Real>::infinity();
     for (Object3D* object : scene.objects) {
-        Real t = object->intersect(cameraRay);
-        if (t > 0 && t < t_intersect) {
-            intersectObject = object;
-            t_intersect = t;
+        Real t_tmp = object->intersect(ray);
+        if (t_tmp > 0 && t_tmp < t) {
+            object_tmp = object;
+            t = t_tmp;
         }
     }
+    return object_tmp;
+}
 
-    if (intersectObject == nullptr) {
-        return Color(0, 0, 0);
+Vec3D PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
+    if (depth >= mMaxDepth) {
+        return Vec3D();
     }
 
-#ifndef RAY_TRACING
-
-    Color color;
-
-    // TODO: Algorithm here :)
-
-    return color;
-
-#else // Ray tracer. Maintained only for testing
-    Color color;
-    Color objectColor = intersectObject->getColor();
-    color.set(objectColor);
-
-    Vec3D intersectPoint_v = cameraRay.point(t_intersect);
-    Vec3D intersectDirection_v = cameraRay.getDirection();
-    intersectPoint_v.set(intersectPoint_v + ACCURACY*intersectObject->getNormal(intersectPoint_v, intersectDirection_v));
-
-    for (LightSource* lightSource : scene.lights) {
-        bool inShadow = false;
-        Color lightColor = lightSource->getColor();
-        Vec3D toLight_v = lightSource->getPosition() - intersectPoint_v;
-        Ray shadowRay(intersectPoint_v, toLight_v);
-
-        for (Object3D* sObject : scene.objects) {
-            Real t = sObject->intersect(shadowRay);
-            Vec3D ori_v = shadowRay.getOrigin();
-            Vec3D dir_v = shadowRay.getDirection();
-
-            if (t > 0 && t < toLight_v.dist()) {
-                inShadow = true;
-                break;
-            }
-        }
-
-        // TODO: This makes no sense, it is just a test to draw shadowed pixels
-        if (inShadow) {
-            color.R *= 0.2;
-            color.B *= 0.2;
-            color.G *= 0.2;
-        }
+    Real t;
+    Object3D* iObject = intersect(ray, scene, t);
+    if (iObject == nullptr) {
+        return Vec3D();
     }
 
-    return color;
-#endif
+    Vec3D iPoint_v = ray.point(t);
+    Vec3D iDirection_v = ray.getDirection();
+    Vec3D iNormal_v = iObject->getHitNormal(iPoint_v, iDirection_v);
+    iPoint_v.set(iPoint_v + ACCURACY*iNormal_v);
+
+    Color iColor = iObject->getColor();
+    Vec3D iColor_v(iColor.R, iColor.G, iColor.B);
+    Vec3D emission = iObject->material.emission*iColor_v;
+
+    Vec3D sample_v = sampleHemisphere(iNormal_v, Xi);
+    //Real cos_theta = sample_v.dot(iNormal_v);
+    const Real p = 1.0f / (2*M_PI);
+    Ray sampleRay(iPoint_v, sample_v);
+
+    Vec3D incoming = iColor_v * traceRay(depth+1, sampleRay, scene);
+    return emission + p*incoming;
 }

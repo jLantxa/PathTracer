@@ -46,9 +46,10 @@ template <typename T> class Vector3D {
         /** Return this vector normalized */
         Vector3D normalize();
 
-        // Addition and subtraction
+        // Element-wise operations
         Vector3D operator+(const Vector3D& v);
         Vector3D operator-(const Vector3D& v);
+        Vector3D operator*(const Vector3D& v);
 
         Vector3D negative();
 
