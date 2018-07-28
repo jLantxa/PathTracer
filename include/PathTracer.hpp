@@ -40,7 +40,9 @@ class PathTracer {
         PathTracer(unsigned depth);
         virtual ~PathTracer();
         Canvas* renderScene(unsigned spp, struct Scene& scene, Camera& camera);
-    
+
+        void setCallback(void (*partialResultCallback)(Canvas*));
+
     private:
         Vec3D traceRay(unsigned depth, Ray& ray, struct Scene& scene);
         Object3D* intersect(Ray& ray, Scene& scene, Real& t);
@@ -48,6 +50,11 @@ class PathTracer {
 
         // Random seed for erand48
         uint16_t Xi[3];
+
+        // Partial result callback
+        void (*partialResultCallback)(Canvas*) = nullptr;
+
+        void notifyCallback(Canvas* canvas);
 };
 
 #endif // _INCLUDE_RAYTRACER_RAYTRACER_H_

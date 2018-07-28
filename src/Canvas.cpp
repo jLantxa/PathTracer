@@ -53,7 +53,7 @@ void Canvas::toPPM(const char* filename) {
     for (int i = 0; i < height; i++)  {
         for (int j = 0; j < width; j++) {
             Vec3D c = color[j][i];
-            fprintf(f,"%d %d %d ", toColorInt(c.x), toColorInt(c.y), toColorInt(c.z));
+            fprintf(f,"%d %d %d ", toColorInt(c.x/spp), toColorInt(c.y/spp), toColorInt(c.z/spp));
         }
     }
     fclose(f);

@@ -33,6 +33,8 @@ class Canvas {
         Vec3D* operator[](unsigned i);
         void toPPM(const char* filename);
 
+        unsigned spp = 1;
+
     private:
         unsigned width;
         unsigned height;

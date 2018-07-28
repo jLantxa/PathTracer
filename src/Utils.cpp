@@ -82,18 +82,17 @@ Vec3D sampleHemisphere(Vec3D& normal, uint16_t* Xi) {
     double phi = 2 * M_PI * erand48(Xi);
     double r = erand48(Xi);
     double rs = sqrt(r);
-    double rs1 = sqrt(1-r);
 
     Vec3D w = normal.normalize();
-    Vec3D rand_v = (w.cross(Vec3D(0, 0, 1)).dist() > 0.1)?
-        Vec3D(0, 0, 1) : Vec3D(1, 1, 0);
+    Vec3D rand_v = (w.cross(Vec3D(0, 0, 1)).dist() > 0)?
+        Vec3D(0, 0, 1) : Vec3D(1, 0, 0);
 
     Vec3D u = w.cross(rand_v);
     Vec3D v = w.cross(u);
     Vec3D sample_v =
         static_cast<Real>(cos(phi)*rs)*u +
         static_cast<Real>(sin(phi)*rs)*v +
-        static_cast<Real>(rs1)*w;
+        static_cast<Real>(sqrt(1-r))*w;
 
     return sample_v;
 }

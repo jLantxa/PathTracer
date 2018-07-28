@@ -37,26 +37,34 @@ PathTracer::PathTracer(unsigned depth) : mMaxDepth(depth) { }
 
 PathTracer::~PathTracer() { }
 
+void PathTracer::setCallback(void (*callback)(Canvas*)) {
+    partialResultCallback = callback;
+}
+
+void PathTracer::notifyCallback(Canvas* partialCanvas) {
+    if (partialResultCallback != nullptr) {
+        partialResultCallback(partialCanvas);
+    }
+}
+
 Canvas* PathTracer::renderScene(unsigned spp , struct Scene& scene, Camera& camera) {
     unsigned width = camera.getWidth();
     unsigned height = camera.getHeight();
-    Real div = 1.0f/spp;
 
     Canvas* canvas = new Canvas(width, height);
 
-    int cnt = 0;
-    #pragma omp parallel for schedule(static) shared(cnt)
-    for (int j = 0; j < height; j++) {
-        //printf("Rendering: %.2f\n", 100.0*(cnt)/(width*height));
-        for (int i = 0; i < width; i++) {
-            cnt++;
-            Vec3D acc;
-            for (int n = 0; n < spp; n++) {
+    for (int n = 1; n <= spp; n++) {
+        printf("Rendering %d/%d: %.2f%%\n", n, spp, 100.0*(n)/(spp));
+        #pragma omp parallel for schedule(static)
+        for (int j = 0; j < height; j++) {
+            for (int i = 0; i < width; i++) {
                 Ray ray = camera.getRayToPixel(i, j);
-                acc = acc + traceRay(0, ray, scene);
+                (*canvas)[i][j] = (*canvas)[i][j] + traceRay(0, ray, scene);
             }
-            (*canvas)[i][j] = div*acc;
         }
+
+        canvas->spp = n;
+        notifyCallback(canvas);
     }
 
     return canvas;

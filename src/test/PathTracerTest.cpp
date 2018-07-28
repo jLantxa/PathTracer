@@ -25,6 +25,7 @@
 
 #include <chrono>
 #include <iostream>
+#include <cstdio>
 
 Sphere* createSphere(Vec3D color, Vec3D& center, Real radius) {
     return new Sphere(color, center, radius);
@@ -40,6 +41,16 @@ Triangle* createTriangle(Vec3D color, Vec3D& A, Vec3D& B, Vec3D& C) {
 
 LightSource* createLight(Vec3D& pos, Vec3D color) {
     return new LightSource(pos, color);
+}
+
+void savePartialResultCallback(Canvas* canvas) {
+    unsigned spp = canvas->spp;
+    // If spp power of 2
+    if (spp && !(spp & (spp - 1))) {
+        char filename[100];
+        sprintf(filename, "pic/conv_test_partial_%d.ppm", spp);
+        canvas->toPPM(filename);
+    }
 }
 
 
@@ -72,7 +83,7 @@ void buildScene(struct Scene* scene) {
     scene->objects.push_back(createPlane(color, v1, v2));
 
     color.set(0.75, 0.75, 0.75);
-    v1.set(0, 0, -300);
+    v1.set(0, 0, -200);
     v2.set(0, 0, 1);
     scene->objects.push_back(createPlane(color, v1, v2));
 
@@ -82,28 +93,28 @@ void buildScene(struct Scene* scene) {
     scene->objects.push_back(createPlane(color, v1, v2));
 
     color.set(1, 0, 0);
-    v1.set(-3*sRad, sRad, -200);
+    v1.set(-2.5f*sRad, sRad, -200+sRad);
     scene->objects.push_back(createSphere(color, v1, sRad));
 
     color.set(0, 1, 0);
-    v1.set(0, sRad, -200 + sRad);
+    v1.set(0, 2*sRad, -200 + sRad+sRad);
     Sphere* greenSphere = createSphere(color, v1, sRad);
     scene->objects.push_back(greenSphere);
 
     color.set(0, 0, 1);
-    v1.set(3*sRad, sRad, -200);
+    v1.set(2.5f*sRad, 2*sRad, -200+sRad);
     scene->objects.push_back(createSphere(color, v1, sRad));
 
     Real lRad = 10;
-    color.set(0.75, 0.75, 0.75);
-    v1.set(-50, ceiling-lRad, -150);
+    color.set(1.0, 1.0, 1.0);
+    v1.set(-50, ceiling-lRad, -100);
     Sphere* lightBall1 = createSphere(color, v1, lRad);
-    lightBall1->material.emission = 25*64.0;
+    lightBall1->material.emission = 20*64.0;
     scene->objects.push_back(lightBall1);
 
-    v1.set(50, ceiling-lRad, -150);
+    v1.set(50, ceiling-lRad, -100);
     Sphere* lightBall2 = createSphere(color, v1, lRad);
-    lightBall2->material.emission = 25*64.0;
+    lightBall2->material.emission = 20*64.0;
     scene->objects.push_back(lightBall2);
 }
 
@@ -115,10 +126,9 @@ void testSample(uint16_t* Xi) {
 int main (int argc, char* argv[]) {
     unsigned width, height, spp, depth, aa;
     float fov;
-    char* filename;
 
-    if (argc != 7) {
-        std::cout << "ERROR: Specify resolution, FOV, SPP, depth and filename" << std::endl;
+    if (argc != 6) {
+        std::cout << "ERROR: Specify resolution, FOV, SPP, depth" << std::endl;
         return -1;
     } else {
         width = atoi(argv[1]);
@@ -126,7 +136,6 @@ int main (int argc, char* argv[]) {
         fov = atof(argv[3]);
         spp = atoi(argv[4]);
         depth = atoi(argv[5]);
-        filename = argv[6];
         //aa = atoi(argv[;6]);
         if (width <= 0 || height <= 0) {
             std::cout << "ERROR: Canvas cannot have null size." << std::endl;
@@ -142,9 +151,6 @@ int main (int argc, char* argv[]) {
         } else if(spp <= 0) {
             std::cout << "Number or samples per pixer must be positive" << std::endl;
             return -1;
-        } else if(depth < 0) {
-            std::cout << "Depth must be positive" << std::endl;
-            return -1;
         }/* else if(aa < 1) {
             std::cout << "Antialias factor must be at least 1" << std::endl;
             return -1;
@@ -155,19 +161,15 @@ int main (int argc, char* argv[]) {
     struct Scene scene;
 
     PathTracer tracer(depth);
-    Vec3D camPos(0, 100, -20);
-    Vec3D camFacing(0, -0.2, -1);
+    tracer.setCallback(savePartialResultCallback);
+    Vec3D camPos(0, 80, -0);
+    Vec3D camFacing(0, -0.1, -1);
     Camera camera(width, height, fov, camPos, camFacing);
     buildScene(&scene);
 
-    std::cout << "Rendering scene..." << std::endl;
-    auto start = std::chrono::high_resolution_clock::now();
     canvas = tracer.renderScene(spp, scene, camera);
-    auto elapsed = std::chrono::high_resolution_clock::now() - start;
-    float seconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() / 1000.0;
-    std::cout << "Finished rendering scene." << std::endl;
-    std::cout << "Took " << seconds << "s" << std::endl;
-
+    char filename[100];
+    sprintf(filename, "pic/conv_test_final_%d.ppm", spp);
     canvas->toPPM(filename);
     return 0;
 }
