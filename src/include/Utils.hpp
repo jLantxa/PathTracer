@@ -20,7 +20,7 @@
 #define _INCLUDE_RAYTRACER_UTILS_H_
 
 #include "Common.hpp"
-#include "Geometry.hpp"
+#include "Vector3D.hpp"
 #include "Objects.hpp"
 
 #include <vector>

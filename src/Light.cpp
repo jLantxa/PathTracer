@@ -20,69 +20,23 @@
 
 #include "Common.hpp"
 #include "Light.hpp"
-#include "Geometry.hpp"
+#include "Vector3D.hpp"
 
-Color::Color() : A(1.0), R(0.0), G(0.0), B(0.0) { }
-
-Color::Color(float r, float g, float b) : A(1.0), R(r), G(g), B(b) { }
-
-Color::Color(float a, float r, float g, float b) : A(a), R(r), G(g), B(b) { }
-
-Color::~Color() { }
-
-void Color::set(Color& color) {
-    A = color.A;
-    R = color.R;
-    G = color.G;
-    B = color.B;
-}
-
-void Color::setRGB(Color& color) {
-    R = color.R;
-    G = color.G;
-    B = color.B;
-}
-
-void Color::set(float r, float g, float b) {
-    R = r;
-    G = g;
-    B = b;
-}
-
-void Color::set(float a, float r, float g, float b) {
-    A = a;
-    R = r;
-    G = g;
-    B = b;
-}
-
-uint32_t Color::getARGB() {
-    uint32_t argb = 0x0;
+uint32_t colorGetARGB(Vec3D& color) {
+    uint32_t argb = 0xFF000000;
     // Valid values from 0 to 1.0
-    argb += (static_cast<int>(clamp(A) * 0xFF) << 24) & 0xFF000000;
-    argb += (static_cast<int>(clamp(R) * 0xFF) << 16) & 0x00FF0000;
-    argb += (static_cast<int>(clamp(G) * 0xFF) <<  8) & 0x0000FF00;
-    argb += (static_cast<int>(clamp(B) * 0xFF))       & 0x000000FF;
+    argb += (static_cast<uint32_t>(colorClamp(color.x) * 0xFF) << 16) & 0x00FF0000;
+    argb += (static_cast<uint32_t>(colorClamp(color.y) * 0xFF) <<  8) & 0x0000FF00;
+    argb +=  static_cast<uint32_t>(colorClamp(color.z) * 0xFF)        & 0x000000FF;
     return argb;
 }
 
-uint8_t Color::intA() {
-    return static_cast<uint8_t>(clamp(A) * 0xFF);
+uint8_t toColorInt(Real component) {
+    return static_cast<uint8_t>(colorClamp(component) * 0xFF);
 }
 
-uint8_t Color::intR() {
-    return static_cast<uint8_t>(clamp(R) * 0xFF);
-}
 
-uint8_t Color::intG() {
-    return static_cast<uint8_t>(clamp(G) * 0xFF);
-}
-
-uint8_t Color::intB() {
-    return static_cast<uint8_t>(clamp(B) * 0xFF);
-}
-
-float Color::clamp(float x) {
+Real colorClamp(Real x) {
     if (x < 0) return 0;
     else if (x > 1) return 1;
     else return x;
@@ -108,7 +62,7 @@ Vec3D Ray::point(Real t) {
 }
 
 
-LightSource::LightSource(Vec3D position_v, Color color) :
+LightSource::LightSource(Vec3D position_v, Vec3D color) :
     mPosition_v(position_v), color(color) { }
 
 LightSource::~LightSource() { }
@@ -117,6 +71,6 @@ Vec3D LightSource::getPosition() {
     return mPosition_v;
 }
 
-Color LightSource::getColor() {
+Vec3D LightSource::getColor() {
     return color;
 }

@@ -19,7 +19,7 @@
 #include "Objects.hpp"
 
 #include "Common.hpp"
-#include "Geometry.hpp"
+#include "Vector3D.hpp"
 #include "Utils.hpp"
 #include "Light.hpp"
 
@@ -27,18 +27,18 @@
 #include <limits>
 
 /* Object3D */
-Object3D::Object3D(Color color) : color(color) { }
+Object3D::Object3D(Vec3D color) : color(color) { }
 
 Object3D::~Object3D() { }
 
 
 /* Sphere */
-Sphere::Sphere(Color color, Vec3D center_V, Real radius) : Object3D(color),
+Sphere::Sphere(Vec3D color, Vec3D center_V, Real radius) : Object3D(color),
     mCenter_v(center_V), radius(radius) { }
 
 Sphere::~Sphere() { }
 
-Color Sphere::getColor() {
+Vec3D Sphere::getColor() {
     return color;
 }
 
@@ -84,12 +84,12 @@ Vec3D Sphere::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
 }
 
 /* Plane */
-Plane::Plane(Color color, Vec3D position_v, Vec3D normal_v) : Object3D(color),
+Plane::Plane(Vec3D color, Vec3D position_v, Vec3D normal_v) : Object3D(color),
     mPosition_v(position_v), mNormal_v(normal_v.normalize()) { }
 
 Plane::~Plane() { }
 
-Color Plane::getColor() {
+Vec3D Plane::getColor() {
     return color;
 }
 
@@ -112,7 +112,7 @@ Vec3D Plane::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
 /* Triangle
  * Surface normal depends on the order of (A, B, C)
 */
-Triangle::Triangle(Color color, Vec3D A_v, Vec3D B_v, Vec3D C_v) : Object3D(color),
+Triangle::Triangle(Vec3D color, Vec3D A_v, Vec3D B_v, Vec3D C_v) : Object3D(color),
     mA_v(A_v), mB_v(B_v), mC_v(C_v)
 {
     Vec3D AC_v = mC_v - mA_v;
@@ -122,7 +122,7 @@ Triangle::Triangle(Color color, Vec3D A_v, Vec3D B_v, Vec3D C_v) : Object3D(colo
 
 Triangle::~Triangle() { }
 
-Color Triangle::getColor() {
+Vec3D Triangle::getColor() {
     return color;
 }
 

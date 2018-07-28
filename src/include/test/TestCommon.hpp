@@ -21,7 +21,7 @@
 
 #include <iostream>
 #include "Common.hpp"
-#include "Geometry.hpp"
+#include "Vector3D.hpp"
 
 void printVector(Vec3D& v) {
     std::cout << "(" <<

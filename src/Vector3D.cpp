@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-#include "Geometry.hpp"
+#include "Vector3D.hpp"
 
 #include <cmath>
 

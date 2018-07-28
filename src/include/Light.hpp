@@ -21,38 +21,11 @@
 
 #include <cstdint>
 #include "Common.hpp"
-#include "Geometry.hpp"
+#include "Vector3D.hpp"
 
-/** ARGB color class */
-class Color {
-    public:
-        float A, R, G, B;
-
-        Color();
-        Color(float r, float g, float b);
-        Color(float a, float r, float g, float b);
-        ~Color();
-
-        /** Copy argb components from a color object */
-        void set(Color& color);
-        /** Copy RGB components from a color object */
-        void setRGB(Color& color);
-        /** Set RGB components. A remains the same. */
-        void set(float r, float g, float b);
-        /** Set ARGB components */
-        void set(float a, float r, float g, float b);
-
-        uint8_t intA();
-        uint8_t intR();
-        uint8_t intG();
-        uint8_t intB();
-
-        /** Return ARGB value as int32_t */
-        uint32_t getARGB();
-
-    private:
-        float clamp(float x);
-};
+uint8_t toColorInt(Real component);
+uint32_t colorGetARGB(Vec3D& v);
+Real colorClamp(Real x);
 
 class Ray {
     public:
@@ -83,15 +56,15 @@ class Ray {
 
 class LightSource {
     public:
-        LightSource(Vec3D position_v, Color color);
+        LightSource(Vec3D position_v, Vec3D color);
         ~LightSource();
 
         Vec3D getPosition();
-        Color getColor();
+        Vec3D getColor();
     
     private:
         Vec3D mPosition_v;
-        Color color;
+        Vec3D color;
 };
 
 struct Material {

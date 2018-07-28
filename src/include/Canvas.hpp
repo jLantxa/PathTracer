@@ -30,14 +30,14 @@ class Canvas {
         unsigned getWidth();
         unsigned getHeight();
 
-        Color* operator[](unsigned i);
+        Vec3D* operator[](unsigned i);
         void toPPM(const char* filename);
 
     private:
         unsigned width;
         unsigned height;
 
-        Color** color;
+        Vec3D** color;
 };
 
 #endif // _INCLUDE_RAYTRACER_CANVAS_H_

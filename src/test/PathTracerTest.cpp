@@ -19,32 +19,32 @@
 #include "PathTracer.hpp"
 #include "Common.hpp"
 #include "Utils.hpp"
-#include "Geometry.hpp"
+#include "Vector3D.hpp"
 #include "Objects.hpp"
 #include "Camera.hpp"
 
 #include <chrono>
 #include <iostream>
 
-Sphere* createSphere(Color color, Vec3D& center, Real radius) {
+Sphere* createSphere(Vec3D color, Vec3D& center, Real radius) {
     return new Sphere(color, center, radius);
 }
 
-Plane* createPlane(Color color, Vec3D& center, Vec3D& normal) {
+Plane* createPlane(Vec3D color, Vec3D& center, Vec3D& normal) {
     return new Plane(color, center, normal);
 }
 
-Triangle* createTriangle(Color color, Vec3D& A, Vec3D& B, Vec3D& C) {
+Triangle* createTriangle(Vec3D color, Vec3D& A, Vec3D& B, Vec3D& C) {
     return new Triangle(color, A, B, C);
 }
 
-LightSource* createLight(Vec3D& pos, Color color) {
+LightSource* createLight(Vec3D& pos, Vec3D color) {
     return new LightSource(pos, color);
 }
 
 
 void buildScene(struct Scene* scene) {
-    Color color;
+    Vec3D color;
     Vec3D v1, v2, v3;
     Real sRad = 30;
 

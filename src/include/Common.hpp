@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-#include "Geometry.hpp"
+#include "Vector3D.hpp"
 
 #ifndef _INCLUDE_RAYTRACER_COMMON_H
 #define _INCLUDE_RAYTRACER_COMMON_H

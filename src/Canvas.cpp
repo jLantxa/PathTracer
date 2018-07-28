@@ -22,9 +22,9 @@
 #include <stdio.h>
 
 Canvas::Canvas(unsigned width, unsigned height) : width(width), height(height) {
-    color = new Color*[width];
+    color = new Vec3D*[width];
     for (int i = 0; i < width; i++) {
-        color[i] = new Color[height];
+        color[i] = new Vec3D[height];
     }
 }
 
@@ -43,7 +43,7 @@ unsigned Canvas::getHeight() {
     return height;
 }
 
-Color* Canvas::operator[](unsigned i) {
+Vec3D* Canvas::operator[](unsigned i) {
     return color[i];
 }
 
@@ -52,8 +52,8 @@ void Canvas::toPPM(const char* filename) {
     fprintf(f, "P3\n%d %d\n%d\n", width, height, 255);
     for (int i = 0; i < height; i++)  {
         for (int j = 0; j < width; j++) {
-            Color c = color[j][i];
-            fprintf(f,"%d %d %d ", c.intR(), c.intG(), c.intB());
+            Vec3D c = color[j][i];
+            fprintf(f,"%d %d %d ", toColorInt(c.x), toColorInt(c.y), toColorInt(c.z));
         }
     }
     fclose(f);

@@ -32,7 +32,7 @@
 struct Scene {
     std::vector<Object3D*> objects;
     std::vector<LightSource*> lights;
-    Color backgroundColor;
+    Vec3D backgroundColor;
 };
 
 class PathTracer {

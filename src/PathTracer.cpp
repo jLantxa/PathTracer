@@ -40,6 +40,7 @@ PathTracer::~PathTracer() { }
 Canvas* PathTracer::renderScene(unsigned spp , struct Scene& scene, Camera& camera) {
     unsigned width = camera.getWidth();
     unsigned height = camera.getHeight();
+    Real div = 1.0f/spp;
 
     Canvas* canvas = new Canvas(width, height);
 
@@ -52,10 +53,9 @@ Canvas* PathTracer::renderScene(unsigned spp , struct Scene& scene, Camera& came
             Vec3D acc;
             for (int n = 0; n < spp; n++) {
                 Ray ray = camera.getRayToPixel(i, j);
-                Vec3D rad = traceRay(0, ray, scene);
-                acc = acc + rad;
+                acc = acc + traceRay(0, ray, scene);
             }
-            (*canvas)[i][j] = Color(acc.x/spp, acc.y/spp, acc.z/spp);
+            (*canvas)[i][j] = div*acc;
         }
     }
 
@@ -91,15 +91,15 @@ Vec3D PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
     Vec3D iNormal_v = iObject->getHitNormal(iPoint_v, iDirection_v);
     iPoint_v.set(iPoint_v + ACCURACY*iNormal_v);
 
-    Color iColor = iObject->getColor();
-    Vec3D iColor_v(iColor.R, iColor.G, iColor.B);
-    Vec3D emission = iObject->material.emission*iColor_v;
+    Vec3D iColor = iObject->getColor();
+    Vec3D emission = iObject->material.emission*iColor;
 
     Vec3D sample_v = sampleHemisphere(iNormal_v, Xi);
-    //Real cos_theta = sample_v.dot(iNormal_v);
+    Real cos_theta = sample_v.dot(iNormal_v);
+    
     const Real p = 1.0f / (2*M_PI);
     Ray sampleRay(iPoint_v, sample_v);
 
-    Vec3D incoming = iColor_v * traceRay(depth+1, sampleRay, scene);
+    Vec3D incoming = iColor * traceRay(depth+1, sampleRay, scene);
     return emission + p*incoming;
 }

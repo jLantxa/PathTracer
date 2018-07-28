@@ -20,7 +20,7 @@
 #define _INCLUDE_RAYTRACER_OBJECTS_H_
 
 #include "Common.hpp"
-#include "Geometry.hpp"
+#include "Vector3D.hpp"
 #include "Light.hpp"
 
 /**
@@ -28,10 +28,10 @@
  */
 class Object3D {
     public:
-        Object3D(Color color);
+        Object3D(Vec3D color);
         virtual ~Object3D();
 
-        virtual Color getColor() = 0;
+        virtual Vec3D getColor() = 0;
         /**
          * Returns the intersection point of the ray and the object
          * as the distance from the ray's origin in the direction of the ray.
@@ -53,17 +53,17 @@ class Object3D {
         // TODO: Made public for testing
         struct Material material;
     protected:
-        Color color;
+        Vec3D color;
 };
 
 
 /** A sphere object derived from the Object3D base */
 class Sphere : public Object3D {
     public:
-        Sphere(Color color, Vec3D center_v, Real radius);
+        Sphere(Vec3D color, Vec3D center_v, Real radius);
         virtual ~Sphere();
 
-        virtual Color getColor();
+        virtual Vec3D getColor();
         virtual Real intersect(Ray& ray);
         virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
         virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
@@ -76,10 +76,10 @@ class Sphere : public Object3D {
 /** A plane object derived from the Object3D base */
 class Plane : public Object3D {
     public:
-        Plane(Color color, Vec3D position_v, Vec3D normal_v);
+        Plane(Vec3D color, Vec3D position_v, Vec3D normal_v);
         virtual ~Plane();
 
-        virtual Color getColor();
+        virtual Vec3D getColor();
         virtual Real intersect(Ray& ray);
         virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
         virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
@@ -93,10 +93,10 @@ class Plane : public Object3D {
 class Triangle : public Object3D {
     public:
         /** A colour and vertices A, B and C */
-        Triangle(Color color, Vec3D A_v, Vec3D B_v, Vec3D C_v);
+        Triangle(Vec3D color, Vec3D A_v, Vec3D B_v, Vec3D C_v);
         virtual ~Triangle();
 
-        virtual Color getColor();
+        virtual Vec3D getColor();
         virtual Real intersect(Ray& ray);
         virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
         virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);

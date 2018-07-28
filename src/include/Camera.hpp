@@ -21,7 +21,7 @@
 
 #include "Common.hpp"
 
-#include "Geometry.hpp"
+#include "Vector3D.hpp"
 #include "Light.hpp"
 
 /**

@@ -19,7 +19,7 @@
 #include "Common.hpp"
 #include "Camera.hpp"
 
-#include "Geometry.hpp"
+#include "Vector3D.hpp"
 #include "Light.hpp"
 
 #include <cmath>

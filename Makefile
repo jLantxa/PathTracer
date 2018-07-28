@@ -14,7 +14,7 @@ TRACER_SOURCES += \
 	$(SRC)/Objects.cpp \
 	$(SRC)/Camera.cpp \
 	$(SRC)/Light.cpp \
-	$(SRC)/Geometry.cpp \
+	$(SRC)/Vector3D.cpp \
 	$(SRC)/Utils.cpp
 
 docs:
