@@ -21,7 +21,7 @@
 
 #include "Light.hpp"
 
-/* A container for an ARGB surface */
+/* A container for an render result */
 class Canvas {
     public:
         Canvas(unsigned width, unsigned height);

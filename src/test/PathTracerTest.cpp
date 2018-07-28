@@ -48,25 +48,25 @@ void buildScene(struct Scene* scene) {
     Vec3D v1, v2, v3;
     Real sRad = 30;
 
-    color.set(0.9, 0.9, 0.9);
+    color.set(0.75, 0.75, 0.75);
     v1.set(0, 0, 0);
     v2.set(0, 1, 0);
     scene->objects.push_back(createPlane(color, v1, v2));
 
     Real ceiling = 6*sRad;
-    color.set(0.88, 0.88, 0.88);
+    color.set(0.75, 0.75, 0.75);
     v1.set(0, ceiling, 0);
     v2.set(0, -1, 0);
     Plane* lightCeil = createPlane(color, v1, v2);
     //lightCeil->material.emission = 0.05;
     scene->objects.push_back(lightCeil);
 
-    color.set(0.75, 0.75, 0.75);
+    color.set(0.75, 0.75, 0.2);
     v1.set(-4*sRad, 0, 0);
     v2.set(1, 0, 0);
     scene->objects.push_back(createPlane(color, v1, v2));
 
-    color.set(0.75, 0.75, 0.75);
+    color.set(0.75, 0.75, 0.2);
     v1.set(4*sRad, 0, 0);
     v2.set(-1, 0, 0);
     scene->objects.push_back(createPlane(color, v1, v2));
@@ -88,7 +88,6 @@ void buildScene(struct Scene* scene) {
     color.set(0, 1, 0);
     v1.set(0, sRad, -200 + sRad);
     Sphere* greenSphere = createSphere(color, v1, sRad);
-    //greenSphere->material.emission = 10;
     scene->objects.push_back(greenSphere);
 
     color.set(0, 0, 1);
@@ -97,10 +96,15 @@ void buildScene(struct Scene* scene) {
 
     Real lRad = 10;
     color.set(0.75, 0.75, 0.75);
-    v1.set(0, ceiling-lRad, -150);
-    Sphere* lightBall = createSphere(color, v1, lRad);
-    lightBall->material.emission = 50*64.0;
-    scene->objects.push_back(lightBall);
+    v1.set(-50, ceiling-lRad, -150);
+    Sphere* lightBall1 = createSphere(color, v1, lRad);
+    lightBall1->material.emission = 25*64.0;
+    scene->objects.push_back(lightBall1);
+
+    v1.set(50, ceiling-lRad, -150);
+    Sphere* lightBall2 = createSphere(color, v1, lRad);
+    lightBall2->material.emission = 25*64.0;
+    scene->objects.push_back(lightBall2);
 }
 
 void testSample(uint16_t* Xi) {
@@ -111,9 +115,10 @@ void testSample(uint16_t* Xi) {
 int main (int argc, char* argv[]) {
     unsigned width, height, spp, depth, aa;
     float fov;
+    char* filename;
 
-    if (argc != 6) {
-        std::cout << "ERROR: Specify resolution, FOV, SPP and depth." << std::endl;
+    if (argc != 7) {
+        std::cout << "ERROR: Specify resolution, FOV, SPP, depth and filename" << std::endl;
         return -1;
     } else {
         width = atoi(argv[1]);
@@ -121,7 +126,8 @@ int main (int argc, char* argv[]) {
         fov = atof(argv[3]);
         spp = atoi(argv[4]);
         depth = atoi(argv[5]);
-        //aa = atoi(argv[6]);
+        filename = argv[6];
+        //aa = atoi(argv[;6]);
         if (width <= 0 || height <= 0) {
             std::cout << "ERROR: Canvas cannot have null size." << std::endl;
             return -1;
@@ -162,6 +168,6 @@ int main (int argc, char* argv[]) {
     std::cout << "Finished rendering scene." << std::endl;
     std::cout << "Took " << seconds << "s" << std::endl;
 
-    canvas->toPPM("pathTracerTest.ppm");
+    canvas->toPPM(filename);
     return 0;
 }

@@ -47,7 +47,7 @@ Canvas* PathTracer::renderScene(unsigned spp , struct Scene& scene, Camera& came
     int cnt = 0;
     #pragma omp parallel for schedule(static) shared(cnt)
     for (int j = 0; j < height; j++) {
-        printf("Rendering: %.2f\n", 100.0*(cnt)/(width*height));
+        //printf("Rendering: %.2f\n", 100.0*(cnt)/(width*height));
         for (int i = 0; i < width; i++) {
             cnt++;
             Vec3D acc;
@@ -96,7 +96,7 @@ Vec3D PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
 
     Vec3D sample_v = sampleHemisphere(iNormal_v, Xi);
     Real cos_theta = sample_v.dot(iNormal_v);
-    
+
     const Real p = 1.0f / (2*M_PI);
     Ray sampleRay(iPoint_v, sample_v);
 

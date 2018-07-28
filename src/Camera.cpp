@@ -73,7 +73,7 @@ float Camera::getAspectRatio() {
 
 
 Vec3D Camera::getVectorToPixel(unsigned i, unsigned j) {
-    Real right = (2 * ((i + 0.5) / width) - 1) * tan(fov/2);
+    Real right = (1 - 2 * (i + 0.5) / width) * tan(fov/2);
     Real up = (1 - 2*(j + 0.5) / height) * tan(fov/2)/aspectRatio;
     Vec3D vector = w + right*u + up*v;
     return (vector).normalize();
