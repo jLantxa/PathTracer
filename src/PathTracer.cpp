@@ -18,11 +18,11 @@
 
 #include "PathTracer.hpp"
 
-#include "Canvas.hpp"
 #include "Common.hpp"
 #include "Camera.hpp"
-#include "Objects.hpp"
 #include "Light.hpp"
+#include "Objects.hpp"
+#include "Surface.hpp"
 #include "Utils.hpp"
 
 #include <limits>
@@ -30,47 +30,33 @@
 
 #include "debug.hpp"
 
-#define TAG "PathTracer"
+static const char* TAG = "PathTracer";
 
 // TODO: This value is completely random
 Real ACCURACY = 0.0001;
 
-PathTracer::PathTracer(unsigned depth) : mMaxDepth(depth) { }
+PathTracer::PathTracer(unsigned spp, unsigned depth)
+:   mSPP(spp), mMaxDepth(depth)
+{ }
 
 PathTracer::~PathTracer() { }
 
-void PathTracer::setCallback(void (*callback)(Canvas*)) {
-    partialResultCallback = callback;
-}
-
-void PathTracer::notifyCallback(Canvas* partialCanvas) {
-    if (partialResultCallback != nullptr) {
-        partialResultCallback(partialCanvas);
-    }
-}
-
-Canvas* PathTracer::renderScene(unsigned spp , struct Scene& scene, Camera& camera) {
-    const unsigned  width = camera.getWidth();
-    const unsigned height = camera.getHeight();
+void PathTracer::renderScene(struct Scene& scene, Camera& camera) {
+    Surface& surface = camera.getSurface();
+    const unsigned width = surface.getWidth();
+    const unsigned height = surface.getHeight();
     Debug::Log::i(TAG, "Render scene: %dx%d", width, height);
 
-    Canvas* canvas = new Canvas(width, height);
-
-    for (int n = 1; n <= spp; n++) {
-        Debug::Log::i(TAG, "Rendering %d/%d: %.2f%%", n, spp, 100.0*(n)/(spp));
+    for (int n = 1; n <= mSPP; n++) {
+        Debug::Log::i(TAG, "Rendering %d/%d: %.2f%%", n, mSPP, 100.0*(n)/(mSPP));
         #pragma omp parallel for schedule(static)
         for (int j = 0; j < height; j++) {
             for (int i = 0; i < width; i++) {
                 Ray ray = camera.getRayToPixel(i, j);
-                (*canvas)[i][j] = (*canvas)[i][j] + traceRay(0, ray, scene);
+                surface[i][j] = surface[i][j] + (1.0f/mSPP)*traceRay(0, ray, scene);
             }
         }
-
-        canvas->spp = n;
-        notifyCallback(canvas);
     }
-
-    return canvas;
 }
 
 IObject3D* PathTracer::intersect(Ray& ray, Scene& scene, Real& t) {

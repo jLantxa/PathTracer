@@ -1,7 +1,7 @@
 /*
  * This source file is part of PathTracer
  *
- * Copyright 2018 Javier Lancha Vázquez
+ * Copyright 2018, 2019 Javier Lancha Vázquez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,10 @@
 #ifndef _INCLUDE_PATHTRACER_PATHTRACER_H_
 #define _INCLUDE_PATHTRACER_PATHTRACER_H_
 
+#include "Renderer.hpp"
+
 #include "Common.hpp"
-#include "Canvas.hpp"
+#include "Surface.hpp"
 #include "Objects.hpp"
 #include "Light.hpp"
 #include "Camera.hpp"
@@ -34,26 +36,28 @@ struct Scene {
     Vec3D backgroundColor;
 };
 
-class PathTracer {
-    public:
-        PathTracer(unsigned depth);
-        virtual ~PathTracer();
-        Canvas* renderScene(unsigned spp, struct Scene& scene, Camera& camera);
+class PathTracer : public IRenderer {
+public:
+    PathTracer(unsigned spp, unsigned depth);
+    virtual ~PathTracer();
 
-        void setCallback(void (*partialResultCallback)(Canvas*));
+    virtual void renderScene(struct Scene& scene, Camera& camera);
 
-    private:
-        Vec3D traceRay(unsigned depth, Ray& ray, struct Scene& scene);
-        IObject3D* intersect(Ray& ray, Scene& scene, Real& t);
-        unsigned mMaxDepth;
+    //virtual void setCallback(void (*partialResultCallback)(Surface*));
 
-        // Random seed for erand48
-        uint16_t Xi[3];
+private:
+    Vec3D traceRay(unsigned depth, Ray& ray, struct Scene& scene);
+    IObject3D* intersect(Ray& ray, Scene& scene, Real& t);
+    unsigned mMaxDepth;
+    unsigned mSPP;
 
-        // Partial result callback
-        void (*partialResultCallback)(Canvas*) = nullptr;
+    // Random seed for erand48
+    uint16_t Xi[3];
 
-        void notifyCallback(Canvas* canvas);
+    // Partial result callback
+    void (*partialResultCallback)(Surface*) = nullptr;
+
+    //void notifyCallback(Surface* surface);
 };
 
 #endif // _INCLUDE_PATHTRACER_PATHTRACER_H_

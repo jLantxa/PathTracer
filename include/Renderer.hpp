@@ -16,30 +16,17 @@
  * limitations under the License.
 */
 
-#ifndef _INCLUDE_PATHTRACER_CANVAS_H_
-#define _INCLUDE_PATHTRACER_CANVAS_H_
+#ifndef _INCLUDE_PATHTRACER_RENDERER_H_
+#define _INCLUDE_PATHTRACER_RENDERER_H_
 
-#include "Light.hpp"
+#include "Camera.hpp"
+#include "Surface.hpp"
 
-/* A container for an render result */
-class Canvas {
-    public:
-        Canvas(unsigned width, unsigned height);
-        virtual ~Canvas();
+class IRenderer {
+public:
+    virtual ~IRenderer() = default;
 
-        unsigned getWidth();
-        unsigned getHeight();
-
-        Vec3D* operator[](unsigned i);
-        void toPPM(const char* filename);
-
-        unsigned spp = 1;
-
-    private:
-        unsigned width;
-        unsigned height;
-
-        Vec3D** color;
+    virtual void renderScene(struct Scene& scene, Camera& camera) = 0;
 };
 
-#endif // _INCLUDE_PATHTRACER_CANVAS_H_
+#endif // _INCLUDE_PATHTRACER_RENDERER_H_

@@ -11,7 +11,7 @@ TEST=$(SRC)/test
 
 TRACER_SOURCES += \
 	$(SRC)/PathTracer.cpp \
-	$(SRC)/Canvas.cpp \
+	$(SRC)/Surface.cpp \
 	$(SRC)/Objects.cpp \
 	$(SRC)/Camera.cpp \
 	$(SRC)/Light.cpp \
@@ -33,4 +33,4 @@ docs:
 	doxygen
 
 PathTracerTest:
-	$(CC) $(CFLAGS) -fopenmp  -I $(INCLUDE)/ $(TRACER_SOURCES) $(TEST)/PathTracerTest.cpp -o $(BUILD)/PathTracerTest
+	$(CC) $(CFLAGS) -DDEBUG_LEVEL=6 -fopenmp  -I $(INCLUDE)/ $(TRACER_SOURCES) $(TEST)/PathTracerTest.cpp -o $(BUILD)/PathTracerTest

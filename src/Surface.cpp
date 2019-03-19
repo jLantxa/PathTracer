@@ -16,44 +16,51 @@
  * limitations under the License.
 */
 
-#include "Canvas.hpp"
+#include "Surface.hpp"
+
+#include "Common.hpp"
+#include "debug.hpp"
 #include "Light.hpp"
 
-#include <stdio.h>
+#include <cstdio>
 
-Canvas::Canvas(unsigned width, unsigned height) : width(width), height(height) {
-    color = new Vec3D*[width];
+static const char* TAG = "Surface";
+
+Surface::Surface(unsigned width, unsigned height) : width(width), height(height) {
+    Debug::Log::d(TAG, "Construct surface %dx%d", width, height);
+    color = new Color*[width];
     for (int i = 0; i < width; i++) {
-        color[i] = new Vec3D[height];
+        color[i] = new Color[height];
     }
 }
 
-Canvas::~Canvas() {
+Surface::~Surface() {
+    Debug::Log::d(TAG, "Delete surface");
     for (int i = 0; i < width; i++) {
-        delete color[i];
+        delete[] color[i];
     }
-    delete color;
+    delete[] color;
 }
 
-unsigned Canvas::getWidth() {
+unsigned Surface::getWidth() {
     return width;
 }
 
-unsigned Canvas::getHeight() {
+unsigned Surface::getHeight() {
     return height;
 }
 
-Vec3D* Canvas::operator[](unsigned i) {
+Color* Surface::operator[](unsigned i) {
     return color[i];
 }
 
-void Canvas::toPPM(const char* filename) {
+void Surface::toPPM(const char* filename) {
     FILE *f = fopen(filename, "w");
     fprintf(f, "P3\n%d %d\n%d\n", width, height, 255);
     for (int i = 0; i < height; i++)  {
         for (int j = 0; j < width; j++) {
-            Vec3D c = color[j][i];
-            fprintf(f,"%d %d %d ", toColorInt(c.x/spp), toColorInt(c.y/spp), toColorInt(c.z/spp));
+            Color c = color[j][i];
+            fprintf(f,"%d %d %d ", toColorInt(c.x), toColorInt(c.y), toColorInt(c.z));
         }
     }
     fclose(f);

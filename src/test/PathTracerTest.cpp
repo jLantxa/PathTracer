@@ -28,7 +28,7 @@
 
 #include "debug.hpp"
 
-#define TAG "PathTracerTest"
+static const char* TAG = "PathTracerTest";
 
 bool isPowerOfTwo(unsigned x) {
     return (x && !(x & (x - 1)));
@@ -44,16 +44,6 @@ Plane* createPlane(struct Material material, Vec3D& center, Vec3D& normal) {
 
 Triangle* createTriangle(struct Material material, Vec3D& A, Vec3D& B, Vec3D& C) {
     return new Triangle(material, A, B, C);
-}
-
-void savePartialResultCallback(Canvas* canvas) {
-    unsigned spp = canvas->spp;
-    // If spp power of 2
-    if (isPowerOfTwo(spp)) {
-        char filename[100];
-        sprintf(filename, "pic/conv_test_partial_%d.ppm", spp);
-        canvas->toPPM(filename);
-    }
 }
 
 
@@ -140,10 +130,10 @@ int main (int argc, char* argv[]) {
         spp = atoi(argv[4]);
         depth = atoi(argv[5]);
         if (width <= 0 || height <= 0) {
-            Debug::Log::e(TAG, "ERROR: Canvas cannot have null size");
+            Debug::Log::e(TAG, "ERROR: Surface cannot have null size");
             return -1;
         } else if (width*height > 1920 * 1080) {
-            Debug::Log::e(TAG, "ERROR: You specified a canvas of size %dx%d. Please, use a lower resolution.", width, height);
+            Debug::Log::e(TAG, "ERROR: You specified a surface of size %dx%d. Please, use a lower resolution.", width, height);
             return -1;
         } else if (fov <= 0 | fov >= 180) {
             Debug::Log::e(TAG, "ERROR: Suported FOVs range from 0º to 180º");
@@ -154,19 +144,19 @@ int main (int argc, char* argv[]) {
         }
     }
 
-    Canvas* canvas;
     struct Scene scene;
 
-    PathTracer tracer(depth);
-    tracer.setCallback(savePartialResultCallback);
+    IRenderer* renderer = new PathTracer(spp, depth);
+    //renderer.setCallback(savePartialResultCallback);
     Vec3D camPos(0, 80, -0);
     Vec3D camFacing(0, -0.1, -1);
     Camera camera(width, height, fov, camPos, camFacing);
+    Surface& surface = camera.getSurface();
     buildScene(&scene);
 
-    canvas = tracer.renderScene(spp, scene, camera);
+    renderer->renderScene(scene, camera);
     char filename[100];
     sprintf(filename, "pic/conv_test_final_%d.ppm", spp);
-    canvas->toPPM(filename);
+    surface.toPPM(filename);
     return 0;
 }

@@ -21,8 +21,9 @@
 
 #include "Common.hpp"
 
-#include "Vector3D.hpp"
 #include "Light.hpp"
+#include "Vector3D.hpp"
+#include "Surface.hpp"
 
 /**
  * A camera object. The Field Of Vision parameter is always entered in degrees.
@@ -33,6 +34,8 @@ class Camera {
         Camera(unsigned width, unsigned height, float fov, Vec3D pos, Vec3D facing);
         virtual ~Camera();
 
+        Surface& getSurface();
+
         /** Get a Ray from the eye to pixel [i, j] */
         Ray getRayToPixel(unsigned i, unsigned j);
 
@@ -41,6 +44,8 @@ class Camera {
         float getFov();
         float getFovInRad();
         float getAspectRatio();
+
+        void setResolution(unsigned width, unsigned height);
 
     private:
         /** Screen width in pixels */
@@ -51,6 +56,8 @@ class Camera {
         float fov;
         /** Aspect ratio (width/height) */
         float aspectRatio;
+        /** Projected image aka. surface */
+        Surface surface;
 
         /** Position of the camera <i>eye</i> */
         Vec3D position;
