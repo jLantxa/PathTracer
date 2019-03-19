@@ -16,8 +16,8 @@
  * limitations under the License.
 */
 
-#ifndef _INCLUDE_RAYTRACER_LIGHT_H_
-#define _INCLUDE_RAYTRACER_LIGHT_H_
+#ifndef _INCLUDE_PATHTRACER_LIGHT_H_
+#define _INCLUDE_PATHTRACER_LIGHT_H_
 
 #include <cstdint>
 #include "Common.hpp"
@@ -61,7 +61,7 @@ class LightSource {
 
         Vec3D getPosition();
         Vec3D getColor();
-    
+
     private:
         Vec3D mPosition_v;
         Vec3D color;
@@ -71,4 +71,4 @@ struct Material {
     float emission = 0;
 };
 
-#endif // _INCLUDE_RAYTRACER_LIGHT_H_
+#endif // _INCLUDE_PATHTRACER_LIGHT_H_

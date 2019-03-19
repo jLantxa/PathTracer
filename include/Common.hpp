@@ -18,10 +18,10 @@
 
 #include "Vector3D.hpp"
 
-#ifndef _INCLUDE_RAYTRACER_COMMON_H
-#define _INCLUDE_RAYTRACER_COMMON_H
+#ifndef _INCLUDE_PATHTRACER_COMMON_H
+#define _INCLUDE_PATHTRACER_COMMON_H
 
 using Real = float;
 using Vec3D = Vector3D<Real>;
 
-#endif // _INCLUDE_RAYTRACER_COMMON_H
+#endif // _INCLUDE_PATHTRACER_COMMON_H

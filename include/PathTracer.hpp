@@ -16,8 +16,8 @@
  * limitations under the License.
 */
 
-#ifndef _INCLUDE_RAYTRACER_RAYTRACER_H_
-#define _INCLUDE_RAYTRACER_RAYTRACER_H_
+#ifndef _INCLUDE_PATHTRACER_PATHTRACER_H_
+#define _INCLUDE_PATHTRACER_PATHTRACER_H_
 
 #include "Common.hpp"
 #include "Canvas.hpp"
@@ -57,4 +57,4 @@ class PathTracer {
         void notifyCallback(Canvas* canvas);
 };
 
-#endif // _INCLUDE_RAYTRACER_RAYTRACER_H_
+#endif // _INCLUDE_PATHTRACER_PATHTRACER_H_

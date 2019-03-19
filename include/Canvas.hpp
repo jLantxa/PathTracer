@@ -16,8 +16,8 @@
  * limitations under the License.
 */
 
-#ifndef _INCLUDE_RAYTRACER_CANVAS_H_
-#define _INCLUDE_RAYTRACER_CANVAS_H_
+#ifndef _INCLUDE_PATHTRACER_CANVAS_H_
+#define _INCLUDE_PATHTRACER_CANVAS_H_
 
 #include "Light.hpp"
 
@@ -26,7 +26,7 @@ class Canvas {
     public:
         Canvas(unsigned width, unsigned height);
         virtual ~Canvas();
-        
+
         unsigned getWidth();
         unsigned getHeight();
 
@@ -42,4 +42,4 @@ class Canvas {
         Vec3D** color;
 };
 
-#endif // _INCLUDE_RAYTRACER_CANVAS_H_
+#endif // _INCLUDE_PATHTRACER_CANVAS_H_

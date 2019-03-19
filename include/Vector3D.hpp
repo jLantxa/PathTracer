@@ -16,50 +16,50 @@
  * limitations under the License.
 */
 
-#ifndef _INCLUDE_RAYTRACER_GEOMETRY_H_
-#define _INCLUDE_RAYTRACER_GEOMETRY_H_
+#ifndef _INCLUDE_PATHTRACER_GEOMETRY_H_
+#define _INCLUDE_PATHTRACER_GEOMETRY_H_
 
 #include <cmath>
 
 /** A 3D vector with its typical operators */
-template <typename T> class Vector3D {
-    public:
-        T x, y, z;
+template <typename T>class Vector3D {
+public:
+    T x, y, z;
 
-        /** 3D constructor */
-        Vector3D(T x, T y, T z);
-        /** 2D constructor (z = 0) */
-        Vector3D(T x, T y);
-        /** Creates a vector with zero components (0, 0, 0) */
-        Vector3D();
-        ~Vector3D();
+    /** 3D constructor */
+    Vector3D(T x, T y, T z);
+    /** 2D constructor (z = 0) */
+    Vector3D(T x, T y);
+    /** Creates a vector with zero components (0, 0, 0) */
+    Vector3D();
+    ~Vector3D();
 
-        /** Copy components from vector v */
-        void set(const Vector3D& v);
-        /** Set the 3D components */
-        void set(T x, T y, T z);
-        /** Set the 2D components (z = 0) */
-        void set(T x, T y);
+    /** Copy components from vector v */
+    void set(const Vector3D& v);
+    /** Set the 3D components */
+    void set(T x, T y, T z);
+    /** Set the 2D components (z = 0) */
+    void set(T x, T y);
 
-        /** Return the norm of the vector */
-        T dist();
-        /** Return this vector normalized */
-        Vector3D normalize();
+    /** Return the norm of the vector */
+    T dist();
+    /** Return this vector normalized */
+    Vector3D normalize();
 
-        // Element-wise operations
-        Vector3D operator+(const Vector3D& v);
-        Vector3D operator-(const Vector3D& v);
-        Vector3D operator*(const Vector3D& v);
+    // Element-wise operations
+    Vector3D operator+(const Vector3D& v);
+    Vector3D operator-(const Vector3D& v);
+    Vector3D operator*(const Vector3D& v);
 
-        Vector3D negative();
+    Vector3D negative();
 
-        /** Dot product */
-        T dot(const Vector3D& v);
-        /** Cross product */
-        Vector3D cross(const Vector3D& v);
+    /** Dot product */
+    T dot(const Vector3D& v);
+    /** Cross product */
+    Vector3D cross(const Vector3D& v);
 
-        bool operator==(const Vector3D& v);
-        bool operator!=(const Vector3D& v);
+    bool operator==(const Vector3D& v);
+    bool operator!=(const Vector3D& v);
 };
 
 /** Pre-multiplication with a scalar */
@@ -78,4 +78,4 @@ inline float radToDeg(float rad) {
 }
 
 
-#endif // _INCLUDE_RAYTRACER_GEOMETRY_H_
+#endif // _INCLUDE_PATHTRACER_GEOMETRY_H_

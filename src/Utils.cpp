@@ -64,7 +64,7 @@ void solveDeg2(Real a, Real b, Real c, struct Deg2Solution& result) {
         }
     }
 
-    
+
     result.valid = true;
 }
 

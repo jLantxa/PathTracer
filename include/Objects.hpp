@@ -16,8 +16,8 @@
  * limitations under the License.
 */
 
-#ifndef _INCLUDE_RAYTRACER_OBJECTS_H_
-#define _INCLUDE_RAYTRACER_OBJECTS_H_
+#ifndef _INCLUDE_PATHTRACER_OBJECTS_H_
+#define _INCLUDE_PATHTRACER_OBJECTS_H_
 
 #include "Common.hpp"
 #include "Vector3D.hpp"
@@ -106,4 +106,4 @@ class Triangle : public Object3D {
         Vec3D mNormal_v;
 };
 
-#endif // _INCLUDE_RAYTRACER_OBJECTS_H_
+#endif // _INCLUDE_PATHTRACER_OBJECTS_H_

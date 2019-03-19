@@ -16,8 +16,8 @@
  * limitations under the License.
 */
 
-#ifndef _INCLUDE_RAYTRACER_UTILS_H_
-#define _INCLUDE_RAYTRACER_UTILS_H_
+#ifndef _INCLUDE_PATHTRACER_UTILS_H_
+#define _INCLUDE_PATHTRACER_UTILS_H_
 
 #include "Common.hpp"
 #include "Vector3D.hpp"
@@ -40,4 +40,4 @@ Real intersectPlane(Vec3D l0, Vec3D l, Vec3D p0, Vec3D n);
 
 Vec3D sampleHemisphere(Vec3D& normal, uint16_t* Xi);
 
-#endif // _INCLUDE_RAYTRACER_UTILS_H_
+#endif // _INCLUDE_PATHTRACER_UTILS_H_

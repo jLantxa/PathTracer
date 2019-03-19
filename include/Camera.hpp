@@ -16,8 +16,8 @@
  * limitations under the License.
 */
 
-#ifndef _INCLUDE_RAYTRACER_CAMERA_H_
-#define _INCLUDE_RAYTRACER_CAMERA_H_
+#ifndef _INCLUDE_PATHTRACER_CAMERA_H_
+#define _INCLUDE_PATHTRACER_CAMERA_H_
 
 #include "Common.hpp"
 
@@ -41,7 +41,7 @@ class Camera {
         float getFov();
         float getFovInRad();
         float getAspectRatio();
-    
+
     private:
         /** Screen width in pixels */
         unsigned width;
@@ -66,4 +66,4 @@ class Camera {
         Vec3D getVectorToPixel(unsigned i, unsigned j);
 };
 
-#endif // _INCLUDE_RAYTRACER_CAMERA_H_
+#endif // _INCLUDE_PATHTRACER_CAMERA_H_

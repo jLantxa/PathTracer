@@ -16,8 +16,8 @@
  * limitations under the License.
 */
 
-#ifndef _INCLUDE_RAYTRACER_TEST_COMMON_H_
-#define _INCLUDE_RAYTRACER_TEST_COMMON_H_
+#ifndef _INCLUDE_PATHTRACER_TEST_COMMON_H_
+#define _INCLUDE_PATHTRACER_TEST_COMMON_H_
 
 #include <iostream>
 #include "Common.hpp"
@@ -35,4 +35,4 @@ void printVector(std::string pfx, Vec3D& v) {
     printVector(v);
 }
 
-#endif // _INCLUDE_RAYTRACER_TEST_COMMON_H_
+#endif // _INCLUDE_PATHTRACER_TEST_COMMON_H_
