@@ -1,4 +1,5 @@
 CC=g++
+CFLAGS=-std=c++17 -O3
 
 BUILD=build
 
@@ -17,13 +18,16 @@ TRACER_SOURCES += \
 	$(SRC)/Vector3D.cpp \
 	$(SRC)/Utils.cpp
 
+init:
+	@mkdir build/
+	@mkdir pic/
+
+clean:
+	@rm -rf build/*
+	@rm -rf pic/*
+
 docs:
 	doxygen
 
 PathTracerTest:
-	$(CC) -fopenmp -O3 -std=c++17 -I $(INCLUDE)/ $(TRACER_SOURCES) $(TEST)/PathTracerTest.cpp -o $(BUILD)/PathTracerTest
-
-fire:
-	@make PathTracerTest
-	@./build/PathTracerTest 800 600 90 128 6
-	@eog pathTracerTest.ppm &
+	$(CC) $(CFLAGS) -fopenmp  -I $(INCLUDE)/ $(TRACER_SOURCES) $(TEST)/PathTracerTest.cpp -o $(BUILD)/PathTracerTest
