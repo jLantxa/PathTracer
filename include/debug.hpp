@@ -51,10 +51,19 @@ namespace Debug
 #endif
 
     template <typename... Args>
-    static void log(const int level, const char* tag, Args... args) {
+    static void log(const int level, const char* tag, const char* str) {
         if (level <= defined_level) {
             printf("[%s] %s: ", level_tags[level], tag);
-            printf(args...);
+            printf("%s", str);
+            printf("\n");
+        }
+    }
+
+    template <typename... Args>
+    static void log(const int level, const char* tag, const char* fmt, Args... args) {
+        if (level <= defined_level) {
+            printf("[%s] %s: ", level_tags[level], tag);
+            printf(fmt, args...);
             printf("\n");
         }
     }
