@@ -1,4 +1,4 @@
-CC=g++
+CC=clang++
 CFLAGS=-std=c++17 -O3 -Werror
 
 BUILD=build
@@ -25,6 +25,9 @@ init:
 clean:
 	@rm -rf build/*
 	@rm -rf pic/*
+
+count-lines:
+	@cloc Makefile $(SRC) $(INCLUDE)
 
 docs:
 	doxygen
