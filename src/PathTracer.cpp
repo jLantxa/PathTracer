@@ -28,7 +28,9 @@
 #include <limits>
 #include <vector>
 
-#include <stdio.h>
+#include "debug.hpp"
+
+#define TAG "PathTracer"
 
 // TODO: This value is completely random
 Real ACCURACY = 0.0001;
@@ -48,13 +50,14 @@ void PathTracer::notifyCallback(Canvas* partialCanvas) {
 }
 
 Canvas* PathTracer::renderScene(unsigned spp , struct Scene& scene, Camera& camera) {
-    unsigned width = camera.getWidth();
-    unsigned height = camera.getHeight();
+    const unsigned  width = camera.getWidth();
+    const unsigned height = camera.getHeight();
+    Debug::Log::i(TAG, "Render scene: %dx%d", width, height);
 
     Canvas* canvas = new Canvas(width, height);
 
     for (int n = 1; n <= spp; n++) {
-        printf("Rendering %d/%d: %.2f%%\n", n, spp, 100.0*(n)/(spp));
+        Debug::Log::i(TAG, "Rendering %d/%d: %.2f%%", n, spp, 100.0*(n)/(spp));
         #pragma omp parallel for schedule(static)
         for (int j = 0; j < height; j++) {
             for (int i = 0; i < width; i++) {
