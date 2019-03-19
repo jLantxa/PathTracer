@@ -1,7 +1,7 @@
 /*
  * This source file is part of PathTracer
  *
- * Copyright 2018 Javier Lancha Vázquez
+ * Copyright 2018, 2019 Javier Lancha Vázquez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,63 +23,59 @@
 #include "Vector3D.hpp"
 #include "Light.hpp"
 
+/* Object library
+ * These are the primitives to build a 3D scene. Any mesh can be constructed
+ * simply by means of Triangle objects. Some more complex objects are also
+ * provided.
+ *
+ * Available objects:
+ *  - Plane
+ *  - Triangle
+ *  - Sphere
+*/
+
+struct Material {
+    Color color;
+    float emission = 0;
+};
+
 /**
  * 3D Object base
  */
-class Object3D {
+class IObject3D {
     public:
-        Object3D(Vec3D color);
-        virtual ~Object3D();
+        IObject3D(struct Material material);
+        virtual ~IObject3D();
 
-        virtual Vec3D getColor() = 0;
-        /**
-         * Returns the intersection point of the ray and the object
+        /** Returns the intersection point of the ray and the object
          * as the distance from the ray's origin in the direction of the ray.
         */
         virtual Real intersect(Ray& ray) = 0;
 
-        /**
-         * Returns a vector normal to the object's surface in a given point
+        /** Returns a vector normal to the object's surface in a given point
          * and hit direction.
         */
         virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) = 0;
 
-        /**
-         * Returns a vector normal to the object's surface in a given point
+        /** Returns a vector normal to the object's surface in a given point
          * facing out of the object
         */
         virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) = 0;
 
-        // TODO: Made public for testing
-        struct Material material;
+        struct Material& material();
+        Color& color();
+
     protected:
-        Vec3D color;
+        struct Material mMaterial;
 };
 
 
-/** A sphere object derived from the Object3D base */
-class Sphere : public Object3D {
+/** A plane object derived from the IObject3D base */
+class Plane : public IObject3D {
     public:
-        Sphere(Vec3D color, Vec3D center_v, Real radius);
-        virtual ~Sphere();
-
-        virtual Vec3D getColor();
-        virtual Real intersect(Ray& ray);
-        virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
-        virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
-
-    private:
-        Vec3D mCenter_v;
-        Real radius;
-};
-
-/** A plane object derived from the Object3D base */
-class Plane : public Object3D {
-    public:
-        Plane(Vec3D color, Vec3D position_v, Vec3D normal_v);
+        Plane(struct Material material, Vec3D position_v, Vec3D normal_v);
         virtual ~Plane();
 
-        virtual Vec3D getColor();
         virtual Real intersect(Ray& ray);
         virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
         virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
@@ -89,14 +85,15 @@ class Plane : public Object3D {
         Vec3D mNormal_v;
 };
 
-/** A triangle object derived from the Object3D base */
-class Triangle : public Object3D {
+/** A triangle object derived from the IObject3D base
+ * Surface normal depends on the order of (A, B, C)
+*/
+class Triangle : public IObject3D {
     public:
         /** A colour and vertices A, B and C */
-        Triangle(Vec3D color, Vec3D A_v, Vec3D B_v, Vec3D C_v);
+        Triangle(struct Material material, Vec3D A_v, Vec3D B_v, Vec3D C_v);
         virtual ~Triangle();
 
-        virtual Vec3D getColor();
         virtual Real intersect(Ray& ray);
         virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
         virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
@@ -104,6 +101,21 @@ class Triangle : public Object3D {
     private:
         Vec3D mA_v, mB_v, mC_v;
         Vec3D mNormal_v;
+};
+
+/** A sphere object derived from the IObject3D base */
+class Sphere : public IObject3D {
+    public:
+        Sphere(struct Material material, Vec3D center_v, Real radius);
+        virtual ~Sphere();
+
+        virtual Real intersect(Ray& ray);
+        virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
+        virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
+
+    private:
+        Vec3D mCenter_v;
+        Real radius;
 };
 
 #endif // _INCLUDE_PATHTRACER_OBJECTS_H_

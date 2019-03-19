@@ -1,7 +1,7 @@
 /*
  * This source file is part of PathTracer
  *
- * Copyright 2018 Javier Lancha Vázquez
+ * Copyright 2018, 2019 Javier Lancha Vázquez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,18 +59,4 @@ Vec3D Ray::getDirection() {
 
 Vec3D Ray::point(Real t) {
     return mOrigin_v + t*mDirection_v;
-}
-
-
-LightSource::LightSource(Vec3D position_v, Vec3D color) :
-    mPosition_v(position_v), color(color) { }
-
-LightSource::~LightSource() { }
-
-Vec3D LightSource::getPosition() {
-    return mPosition_v;
-}
-
-Vec3D LightSource::getColor() {
-    return color;
 }

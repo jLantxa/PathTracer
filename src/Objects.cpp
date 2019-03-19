@@ -1,7 +1,7 @@
 /*
  * This source file is part of PathTracer
  *
- * Copyright 2018 Javier Lancha Vázquez
+ * Copyright 2018, 2019 Javier Lancha Vázquez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,72 +26,25 @@
 #include <algorithm>
 #include <limits>
 
-/* Object3D */
-Object3D::Object3D(Vec3D color) : color(color) { }
+/* IObject3D */
+IObject3D::IObject3D(struct Material material) : mMaterial(material) { }
 
-Object3D::~Object3D() { }
+IObject3D::~IObject3D() { }
 
-
-/* Sphere */
-Sphere::Sphere(Vec3D color, Vec3D center_V, Real radius) : Object3D(color),
-    mCenter_v(center_V), radius(radius) { }
-
-Sphere::~Sphere() { }
-
-Vec3D Sphere::getColor() {
-    return color;
+Color& IObject3D::color() {
+    return mMaterial.color;
 }
 
-Real Sphere::intersect(Ray& ray) {
-    Vec3D dir_v = ray.getDirection();
-    Vec3D oc_v = ray.getOrigin() - mCenter_v;
-    Real a = dir_v.dot(dir_v);
-    Real b = 2 * dir_v.dot(oc_v);
-    Real c = oc_v.dot(oc_v) - radius*radius;
-
-    Deg2Solution t_sol;
-    solveDeg2(a, b, c, t_sol);
-    if (!t_sol.valid) {
-        return -std::numeric_limits<Real>::infinity();
-    }
-
-    if (t_sol.x1 < 0) {
-        if (t_sol.x2 < 0) {
-            return -std::numeric_limits<Real>::infinity();
-        } else {
-            return t_sol.x2;
-        }
-    } else {
-        if (t_sol.x2 < 0) {
-            return t_sol.x1;
-        } else {
-            return std::min(t_sol.x1, t_sol.x2);
-        }
-    }
-}
-
-Vec3D Sphere::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
-    Vec3D surfNormal = getSurfaceNormal(hitPoint_v, hitDirection_v);
-    if (hitDirection_v.dot(surfNormal) < 0) {
-        return surfNormal;
-    } else {
-        return surfNormal.negative();
-    }
-}
-
-Vec3D Sphere::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
-    return hitPoint_v - mCenter_v;
+struct Material& IObject3D::material() {
+    return mMaterial;
 }
 
 /* Plane */
-Plane::Plane(Vec3D color, Vec3D position_v, Vec3D normal_v) : Object3D(color),
+Plane::Plane(struct Material material, Vec3D position_v, Vec3D normal_v)
+:   IObject3D(material),
     mPosition_v(position_v), mNormal_v(normal_v.normalize()) { }
 
 Plane::~Plane() { }
-
-Vec3D Plane::getColor() {
-    return color;
-}
 
 Real Plane::intersect(Ray& ray) {
     return intersectPlane(ray.getOrigin(), ray.getDirection(), mPosition_v, mNormal_v);
@@ -112,7 +65,8 @@ Vec3D Plane::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
 /* Triangle
  * Surface normal depends on the order of (A, B, C)
 */
-Triangle::Triangle(Vec3D color, Vec3D A_v, Vec3D B_v, Vec3D C_v) : Object3D(color),
+Triangle::Triangle(struct Material material, Vec3D A_v, Vec3D B_v, Vec3D C_v)
+:   IObject3D(material),
     mA_v(A_v), mB_v(B_v), mC_v(C_v)
 {
     Vec3D AC_v = mC_v - mA_v;
@@ -121,10 +75,6 @@ Triangle::Triangle(Vec3D color, Vec3D A_v, Vec3D B_v, Vec3D C_v) : Object3D(colo
 }
 
 Triangle::~Triangle() { }
-
-Vec3D Triangle::getColor() {
-    return color;
-}
 
 Real Triangle::intersect(Ray& ray) {
     Vec3D rayOrigin_v = ray.getOrigin();
@@ -171,4 +121,52 @@ Vec3D Triangle::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
 
 Vec3D Triangle::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
     return mNormal_v;
+}
+
+/* Sphere */
+Sphere::Sphere(struct Material material, Vec3D center_V, Real radius)
+:   IObject3D(material),
+    mCenter_v(center_V), radius(radius) { }
+
+Sphere::~Sphere() { }
+
+Real Sphere::intersect(Ray& ray) {
+    Vec3D dir_v = ray.getDirection();
+    Vec3D oc_v = ray.getOrigin() - mCenter_v;
+    Real a = dir_v.dot(dir_v);
+    Real b = 2 * dir_v.dot(oc_v);
+    Real c = oc_v.dot(oc_v) - radius*radius;
+
+    Deg2Solution t_sol;
+    solveDeg2(a, b, c, t_sol);
+    if (!t_sol.valid) {
+        return -std::numeric_limits<Real>::infinity();
+    }
+
+    if (t_sol.x1 < 0) {
+        if (t_sol.x2 < 0) {
+            return -std::numeric_limits<Real>::infinity();
+        } else {
+            return t_sol.x2;
+        }
+    } else {
+        if (t_sol.x2 < 0) {
+            return t_sol.x1;
+        } else {
+            return std::min(t_sol.x1, t_sol.x2);
+        }
+    }
+}
+
+Vec3D Sphere::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    Vec3D surfNormal = getSurfaceNormal(hitPoint_v, hitDirection_v);
+    if (hitDirection_v.dot(surfNormal) < 0) {
+        return surfNormal;
+    } else {
+        return surfNormal.negative();
+    }
+}
+
+Vec3D Sphere::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    return hitPoint_v - mCenter_v;
 }

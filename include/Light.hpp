@@ -1,7 +1,7 @@
 /*
  * This source file is part of PathTracer
  *
- * Copyright 2018 Javier Lancha Vázquez
+ * Copyright 2018, 2019 Javier Lancha Vázquez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,24 +51,8 @@ class Ray {
     private:
         /** Origin vector */
         Vec3D mOrigin_v;
+        /** Propagation direction of the Ray */
         Vec3D mDirection_v;
-};
-
-class LightSource {
-    public:
-        LightSource(Vec3D position_v, Vec3D color);
-        ~LightSource();
-
-        Vec3D getPosition();
-        Vec3D getColor();
-
-    private:
-        Vec3D mPosition_v;
-        Vec3D color;
-};
-
-struct Material {
-    float emission = 0;
 };
 
 #endif // _INCLUDE_PATHTRACER_LIGHT_H_

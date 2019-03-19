@@ -23,5 +23,6 @@
 
 using Real = float;
 using Vec3D = Vector3D<Real>;
+using Color = Vec3D;
 
 #endif // _INCLUDE_PATHTRACER_COMMON_H

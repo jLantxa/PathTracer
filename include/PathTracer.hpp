@@ -30,8 +30,7 @@
 
 /** A container of objects and light sources */
 struct Scene {
-    std::vector<Object3D*> objects;
-    std::vector<LightSource*> lights;
+    std::vector<IObject3D*> objects;
     Vec3D backgroundColor;
 };
 
@@ -45,7 +44,7 @@ class PathTracer {
 
     private:
         Vec3D traceRay(unsigned depth, Ray& ray, struct Scene& scene);
-        Object3D* intersect(Ray& ray, Scene& scene, Real& t);
+        IObject3D* intersect(Ray& ray, Scene& scene, Real& t);
         unsigned mMaxDepth;
 
         // Random seed for erand48

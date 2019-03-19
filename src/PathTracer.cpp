@@ -1,7 +1,7 @@
 /*
  * This source file is part of PathTracer
  *
- * Copyright 2018 Javier Lancha Vázquez
+ * Copyright 2018, 2019 Javier Lancha Vázquez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,10 +73,10 @@ Canvas* PathTracer::renderScene(unsigned spp , struct Scene& scene, Camera& came
     return canvas;
 }
 
-Object3D* PathTracer::intersect(Ray& ray, Scene& scene, Real& t) {
-    Object3D* object_tmp = nullptr;
+IObject3D* PathTracer::intersect(Ray& ray, Scene& scene, Real& t) {
+    IObject3D* object_tmp = nullptr;
     t = std::numeric_limits<Real>::infinity();
-    for (Object3D* object : scene.objects) {
+    for (IObject3D* object : scene.objects) {
         Real t_tmp = object->intersect(ray);
         if (t_tmp > 0 && t_tmp < t) {
             object_tmp = object;
@@ -92,7 +92,7 @@ Vec3D PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
     }
 
     Real t;
-    Object3D* iObject = intersect(ray, scene, t);
+    IObject3D* iObject = intersect(ray, scene, t);
     if (iObject == nullptr) {
         return Vec3D();
     }
@@ -102,8 +102,8 @@ Vec3D PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
     Vec3D iNormal_v = iObject->getHitNormal(iPoint_v, iDirection_v);
     iPoint_v.set(iPoint_v + ACCURACY*iNormal_v);
 
-    Vec3D iColor = iObject->getColor();
-    Vec3D emission = iObject->material.emission*iColor;
+    Vec3D iColor = iObject->color();
+    Vec3D emission = iObject->material().emission*iColor;
 
     Vec3D sample_v = sampleHemisphere(iNormal_v, Xi);
     Real cos_theta = sample_v.dot(iNormal_v);
