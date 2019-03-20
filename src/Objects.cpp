@@ -63,6 +63,17 @@ Vec3D Plane::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
     return mNormal_v;
 }
 
+// TODO: This is a placeholder
+struct Enclosure Plane::getEnclosure() {
+    const Real nInf = -infinity<Real>();
+    const Real inf = infinity<Real>();
+    return Enclosure {
+        nInf, inf,
+        nInf, inf,
+        nInf, inf,
+    };
+}
+
 
 /* Triangle
  * Surface normal depends on the order of (A, B, C)
@@ -125,11 +136,27 @@ Vec3D Triangle::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
     return mNormal_v;
 }
 
+struct Enclosure Triangle::getEnclosure() {
+    const auto x = {mA_v.x, mB_v.x, mC_v.x};
+    const auto y = {mA_v.y, mB_v.y, mC_v.y};
+    const auto z = {mA_v.z, mB_v.z, mC_v.z};
+
+    const auto [xmin, xmax] = std::minmax_element(x.begin(), x.end());
+    const auto [ymin, ymax] = std::minmax_element(y.begin(), y.end());
+    const auto [zmin, zmax] = std::minmax_element(z.begin(), z.end());
+
+    return Enclosure {
+        *xmin, *xmax,
+        *ymin, *ymax,
+        *zmin, *zmax
+    };
+}
+
 
 /* Sphere */
 Sphere::Sphere(struct Material material, Vec3D center_V, Real radius)
 :   IObject3D(material),
-    mCenter_v(center_V), radius(radius) { }
+    mCenter_v(center_V), mRadius(radius) { }
 
 Sphere::~Sphere() { }
 
@@ -138,7 +165,7 @@ Real Sphere::intersect(Ray& ray) {
     Vec3D oc_v = ray.getOrigin() - mCenter_v;
     Real a = dir_v.dot(dir_v);
     Real b = 2 * dir_v.dot(oc_v);
-    Real c = oc_v.dot(oc_v) - radius*radius;
+    Real c = oc_v.dot(oc_v) - mRadius*mRadius;
 
     Deg2Solution t_sol;
     solveDeg2(a, b, c, t_sol);
@@ -174,6 +201,13 @@ Vec3D Sphere::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
     return hitPoint_v - mCenter_v;
 }
 
+struct Enclosure Sphere::getEnclosure() {
+    return Enclosure {
+        mCenter_v.x - mRadius, mCenter_v.x + mRadius,
+        mCenter_v.y - mRadius, mCenter_v.y + mRadius,
+        mCenter_v.z - mRadius, mCenter_v.z + mRadius,
+    };
+}
 
 /* CompositeObject3D */
 Real CompositeObject3D::intersect(Ray& ray) {
@@ -205,4 +239,21 @@ Vec3D CompositeObject3D::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection
     Ray ray(hitPoint_v, hitDirection_v);
     IObject3D* iObject = intersectedObject(ray);
     return iObject->getHitNormal(hitPoint_v, hitDirection_v);
+}
+
+void CompositeObject3D::addObject(IObject3D* object) {
+    mObjects.push_back(object);
+}
+
+std::vector<IObject3D*>& CompositeObject3D::children() {
+    return mObjects;
+}
+
+struct Enclosure CompositeObject3D::getEnclosure() {
+    return mEnclosure;
+}
+
+// TODO: Update enclosure and boundary
+void CompositeObject3D::updateBoundary() {
+
 }

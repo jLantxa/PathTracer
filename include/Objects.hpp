@@ -41,6 +41,12 @@ struct Material {
     float emission = 0;
 };
 
+struct Enclosure {
+    Real x_min, x_max;
+    Real y_min, y_max;
+    Real z_min, z_max;
+};
+
 /**
  * 3D Object base
  */
@@ -64,6 +70,8 @@ class IObject3D {
         */
         virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) = 0;
 
+        virtual struct Enclosure getEnclosure() = 0;
+
         struct Material& material();
         Color& color();
 
@@ -80,6 +88,8 @@ class Plane : public IObject3D {
         virtual Real intersect(Ray& ray);
         virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
         virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
+
+        virtual struct Enclosure getEnclosure();
 
     private:
         Vec3D mPosition_v;
@@ -99,6 +109,9 @@ class Triangle : public IObject3D {
         virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
         virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
 
+        // TODO: Return the cubic enclosure of the triangle
+        virtual struct Enclosure getEnclosure();
+
     private:
         Vec3D mA_v, mB_v, mC_v;
         Vec3D mNormal_v;
@@ -114,9 +127,15 @@ class Sphere : public IObject3D {
         virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
         virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
 
+        // TODO: Return the cubic enclosure of the sphere
+        virtual struct Enclosure getEnclosure();
+
+        Vec3D center() { return mCenter_v; }
+        Real radius() { return mRadius; }
+
     private:
         Vec3D mCenter_v;
-        Real radius;
+        Real mRadius;
 };
 
 /** A CompositeObject3D groups an arbitrary number of IObject3D entities
@@ -135,12 +154,26 @@ public:
     virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
     virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
 
+    // Add object to vector
+    virtual void addObject(IObject3D* object);
+
+    // Get a reference to the children vector
+    virtual std::vector<IObject3D*>& children();
+
+    virtual struct Enclosure getEnclosure();
+
 protected:
-    // TODO: Define a Cube object to use as a container boundary
+    /* TODO:
+     * Define a Cube object to use as a container boundary
+     * Can this pointer leak?
+    */
     IObject3D* mBoundary;
+    struct Enclosure mEnclosure;
     std::vector<IObject3D*> mObjects;
 
     IObject3D* intersectedObject(Ray& ray);
+
+    void updateBoundary();
 };
 
 #endif // _INCLUDE_PATHTRACER_OBJECTS_H_

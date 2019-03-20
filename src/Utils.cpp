@@ -17,6 +17,7 @@
 */
 
 #include "Utils.hpp"
+
 #include "Common.hpp"
 #include "Objects.hpp"
 #include "Vector3D.hpp"
@@ -29,8 +30,6 @@
 
 #include <limits>
 #include <vector>
-
-#include "test/TestCommon.hpp"
 
 /** Calculate discriminant b^2 - 4ac */
 inline Real discriminant(Real a, Real b, Real c) {
