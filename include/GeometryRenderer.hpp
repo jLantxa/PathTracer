@@ -1,7 +1,7 @@
 /*
  * This source file is part of PathTracer
  *
- * Copyright 2018, 2019 Javier Lancha Vázquez
+ * Copyright 2019 Javier Lancha Vázquez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,35 +16,23 @@
  * limitations under the License.
 */
 
-#ifndef _INCLUDE_PATHTRACER_PATHTRACER_H_
-#define _INCLUDE_PATHTRACER_PATHTRACER_H_
+#ifndef _INCLUDE_PATHTRACER_GEOMETRYRENDERER_H_
+#define _INCLUDE_PATHTRACER_GEOMETRYRENDERER_H_
 
 #include "IRenderer.hpp"
 
-#include "Common.hpp"
-#include "Surface.hpp"
-#include "Objects.hpp"
-#include "Light.hpp"
 #include "Camera.hpp"
+#include "Light.hpp"
 
-#include <cstdint>
-#include <vector>
-
-class PathTracer : public IRenderer {
+class GeometryRenderer : public IRenderer {
 public:
-    PathTracer(unsigned spp, unsigned depth);
-    virtual ~PathTracer();
+    GeometryRenderer();
+    virtual ~GeometryRenderer();
 
     virtual void renderScene(struct Scene& scene, Camera& camera);
 
-private:
-    unsigned mMaxDepth;
-    unsigned mSPP;
-
-    // Random seed for erand48
-    uint16_t Xi[3];
-
-    Color traceRay(unsigned depth, Ray& ray, struct Scene& scene);
+protected:
+    virtual Color traceRay(Ray& ray, struct Scene& scene);
 };
 
-#endif // _INCLUDE_PATHTRACER_PATHTRACER_H_
+#endif // _INCLUDE_PATHTRACER_GEOMETRYRENDERER_H_

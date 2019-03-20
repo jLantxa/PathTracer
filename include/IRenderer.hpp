@@ -19,8 +19,20 @@
 #ifndef _INCLUDE_PATHTRACER_RENDERER_H_
 #define _INCLUDE_PATHTRACER_RENDERER_H_
 
+#include "Common.hpp"
+
 #include "Camera.hpp"
+#include "Objects.hpp"
 #include "Surface.hpp"
+
+#include <vector>
+
+/** A container of objects and light sources */
+// TODO: Delete objects
+struct Scene {
+    std::vector<IObject3D*> objects;
+    Color backgroundColor;
+};
 
 class IRenderer {
 public:

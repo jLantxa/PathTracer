@@ -11,6 +11,7 @@ TEST=$(SRC)/test
 
 TRACER_SOURCES += \
 	$(SRC)/PathTracer.cpp \
+	$(SRC)/GeometryRenderer.cpp \
 	$(SRC)/Surface.cpp \
 	$(SRC)/Objects.cpp \
 	$(SRC)/Camera.cpp \

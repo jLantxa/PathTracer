@@ -147,7 +147,6 @@ int main (int argc, char* argv[]) {
     struct Scene scene;
 
     IRenderer* renderer = new PathTracer(spp, depth);
-    //renderer.setCallback(savePartialResultCallback);
     Vec3D camPos(0, 80, -0);
     Vec3D camFacing(0, -0.1, -1);
     Camera camera(width, height, fov, camPos, camFacing);
