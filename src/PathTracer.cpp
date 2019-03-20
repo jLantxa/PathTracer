@@ -25,6 +25,7 @@
 #include "Surface.hpp"
 #include "Utils.hpp"
 
+#include <chrono>
 #include <limits>
 #include <vector>
 
@@ -47,14 +48,38 @@ void PathTracer::render(struct Scene& scene, Camera& camera) {
     const unsigned height = surface.getHeight();
     Debug::Log::i(TAG, "Render scene: %dx%d", width, height);
 
+#ifdef PATH_TRACER_TIME_ESTIMATION
+    CircularTimeArray<int> durations(3);
+#endif
+
     for (int n = 1; n <= mSPP; n++) {
-        Debug::Log::i(TAG, "Rendering %d/%d: %.2f%%", n, mSPP, 100.0*(n)/(mSPP));
+#ifdef PATH_TRACER_TIME_ESTIMATION
+        auto start = std::chrono::high_resolution_clock::now();
+        Debug::Log::i(TAG, "Rendering %d/%d: %.2f%% ETA: %.0f s",
+            n, mSPP, 100.0*(n-1)/(mSPP), (mSPP+1-n)*durations.mean()/1000.0);
+#else
+        Debug::Log::i(TAG, "Rendering %d/%d: %.2f%%", n, mSPP, 100.0*(n-1)/(mSPP));
+#endif
+
         #pragma omp parallel for schedule(static)
         for (int j = 0; j < height; j++) {
             for (int i = 0; i < width; i++) {
                 Ray ray = camera.getRayToPixel(i, j);
-                surface[i][j] = surface[i][j] + (1.0f/mSPP)*traceRay(0, ray, scene);
+                surface[i][j] += traceRay(0, ray, scene);
             }
+        }
+
+#ifdef PATH_TRACER_TIME_ESTIMATION
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        durations.add(duration);
+#endif
+    }
+
+    const Real ispp = 1.0f/mSPP;
+    for (int j = 0; j < height; j++) {
+        for (int i = 0; i < width; i++) {
+            surface[i][j] *= ispp;
         }
     }
 }

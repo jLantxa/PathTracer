@@ -51,4 +51,34 @@ inline T infinity() {
 Real gammaFunc(Real x, Real gamma);
 Color gammaFunc(Color c, Real gamma);
 
+template <typename T>
+class CircularTimeArray {
+public:
+    CircularTimeArray(unsigned length) : mLength(length), mHead(0) {
+        mValues = new T[length];
+    }
+
+    void add(T val) {
+        mValues[mHead] = val;
+        mHead = (mHead+1) % mLength;
+    }
+
+    Real mean() {
+        T acc = 0;
+        unsigned valid = 0;
+        for (unsigned i = 0; i < mLength; i++) {
+            T val = mValues[i];
+            if (val <= 0) continue;
+            acc += val;
+            valid++;
+        }
+        return acc/valid;
+    }
+
+private:
+    unsigned mLength;
+    unsigned mHead;
+    T* mValues;
+};
+
 #endif // _INCLUDE_PATHTRACER_UTILS_H_

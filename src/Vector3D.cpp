@@ -90,6 +90,30 @@ Vector3D<T> Vector3D<T>::operator*(const Vector3D& v) {
 }
 
 template <typename T>
+Vector3D<T>& Vector3D<T>::operator+=(const Vector3D& v) {
+    x += v.x;
+    y += v.y;
+    z += v.z;
+    return *this;
+}
+
+template <typename T>
+Vector3D<T>& Vector3D<T>::operator-=(const Vector3D& v) {
+    x -= v.x;
+    y -= v.y;
+    z -= v.z;
+    return *this;
+}
+
+template <typename T>
+Vector3D<T>& Vector3D<T>::operator*=(const T k) {
+    x *= k;
+    y *= k;
+    z *= k;
+    return *this;
+}
+
+template <typename T>
 Vector3D<T> Vector3D<T>::negative() {
     Vector3D<T> neg(-x, -y, -z);
     return neg;

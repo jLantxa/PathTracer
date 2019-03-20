@@ -51,6 +51,10 @@ public:
     Vector3D operator-(const Vector3D& v);
     Vector3D operator*(const Vector3D& v);
 
+    Vector3D& operator+=(const Vector3D& v);
+    Vector3D& operator-=(const Vector3D& v);
+    Vector3D& operator*=(const T k);
+
     Vector3D negative();
 
     /** Dot product */

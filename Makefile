@@ -19,6 +19,10 @@ TRACER_SOURCES += \
 	$(SRC)/Vector3D.cpp \
 	$(SRC)/Utils.cpp
 
+PATH_TRACER_TEST_FLAGS += \
+	-DPATH_TRACER_TIME_ESTIMATION=1 \
+	-DDEBUG_LEVEL=6
+
 init:
 	@mkdir build/
 	@mkdir pic/
@@ -34,4 +38,6 @@ docs:
 	doxygen
 
 PathTracerTest:
-	$(CC) $(CFLAGS) -DDEBUG_LEVEL=6 -fopenmp  -I $(INCLUDE)/ $(TRACER_SOURCES) $(TEST)/PathTracerTest.cpp -o $(BUILD)/PathTracerTest
+	@$(CC) $(CFLAGS) $(PATH_TRACER_TEST_FLAGS) \
+	-fopenmp -I $(INCLUDE)/ \
+	$(TRACER_SOURCES) $(TEST)/PathTracerTest.cpp -o $(BUILD)/PathTracerTest
