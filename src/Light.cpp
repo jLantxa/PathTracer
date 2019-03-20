@@ -22,7 +22,7 @@
 #include "Light.hpp"
 #include "Vector3D.hpp"
 
-uint32_t colorGetARGB(Vec3D& color) {
+uint32_t colorGetARGB(Color& color) {
     uint32_t argb = 0xFF000000;
     // Valid values from 0 to 1.0
     argb += (static_cast<uint32_t>(colorClamp(color.x) * 0xFF) << 16) & 0x00FF0000;

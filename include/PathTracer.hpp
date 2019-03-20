@@ -33,7 +33,7 @@
 /** A container of objects and light sources */
 struct Scene {
     std::vector<IObject3D*> objects;
-    Vec3D backgroundColor;
+    Color backgroundColor;
 };
 
 class PathTracer : public IRenderer {
@@ -43,21 +43,14 @@ public:
 
     virtual void renderScene(struct Scene& scene, Camera& camera);
 
-    //virtual void setCallback(void (*partialResultCallback)(Surface*));
-
 private:
-    Vec3D traceRay(unsigned depth, Ray& ray, struct Scene& scene);
-    IObject3D* intersect(Ray& ray, Scene& scene, Real& t);
     unsigned mMaxDepth;
     unsigned mSPP;
 
     // Random seed for erand48
     uint16_t Xi[3];
 
-    // Partial result callback
-    void (*partialResultCallback)(Surface*) = nullptr;
-
-    //void notifyCallback(Surface* surface);
+    Color traceRay(unsigned depth, Ray& ray, struct Scene& scene);
 };
 
 #endif // _INCLUDE_PATHTRACER_PATHTRACER_H_

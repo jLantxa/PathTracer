@@ -20,8 +20,10 @@
 #define _INCLUDE_PATHTRACER_OBJECTS_H_
 
 #include "Common.hpp"
-#include "Vector3D.hpp"
 #include "Light.hpp"
+#include "Vector3D.hpp"
+
+#include <vector>
 
 /* Object library
  * These are the primitives to build a 3D scene. Any mesh can be constructed
@@ -69,7 +71,6 @@ class IObject3D {
         struct Material mMaterial;
 };
 
-
 /** A plane object derived from the IObject3D base */
 class Plane : public IObject3D {
     public:
@@ -116,6 +117,30 @@ class Sphere : public IObject3D {
     private:
         Vec3D mCenter_v;
         Real radius;
+};
+
+/** A CompositeObject3D groups an arbitrary number of IObject3D entities
+ * into a single one.
+*/
+class CompositeObject3D : public IObject3D {
+public:
+    CompositeObject3D();
+    virtual ~CompositeObject3D() = 0;
+
+    virtual Real intersect(Ray& ray);
+
+    /* In the case of a CompositeObject3D we first need to calculate the
+     * intersections to determine what object in the composite we hit
+    */
+    virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
+    virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
+
+protected:
+    // TODO: Define a Cube object to use as a container boundary
+    IObject3D* mBoundary;
+    std::vector<IObject3D*> mObjects;
+
+    IObject3D* intersectedObject(Ray& ray);
 };
 
 #endif // _INCLUDE_PATHTRACER_OBJECTS_H_

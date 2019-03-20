@@ -59,28 +59,15 @@ void PathTracer::renderScene(struct Scene& scene, Camera& camera) {
     }
 }
 
-IObject3D* PathTracer::intersect(Ray& ray, Scene& scene, Real& t) {
-    IObject3D* object_tmp = nullptr;
-    t = std::numeric_limits<Real>::infinity();
-    for (IObject3D* object : scene.objects) {
-        Real t_tmp = object->intersect(ray);
-        if (t_tmp > 0 && t_tmp < t) {
-            object_tmp = object;
-            t = t_tmp;
-        }
-    }
-    return object_tmp;
-}
-
-Vec3D PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
+Color PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
     if (depth >= mMaxDepth) {
-        return Vec3D();
+        return Color();
     }
 
     Real t;
-    IObject3D* iObject = intersect(ray, scene, t);
+    IObject3D* iObject = intersectObjects(ray, scene.objects, t);
     if (iObject == nullptr) {
-        return Vec3D();
+        return Color();
     }
 
     Vec3D iPoint_v = ray.point(t);
@@ -88,8 +75,8 @@ Vec3D PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
     Vec3D iNormal_v = iObject->getHitNormal(iPoint_v, iDirection_v);
     iPoint_v.set(iPoint_v + ACCURACY*iNormal_v);
 
-    Vec3D iColor = iObject->color();
-    Vec3D emission = iObject->material().emission*iColor;
+    Color iColor = iObject->color();
+    Color emission = iObject->material().emission*iColor;
 
     Vec3D sample_v = sampleHemisphere(iNormal_v, Xi);
     Real cos_theta = sample_v.dot(iNormal_v);
@@ -97,6 +84,6 @@ Vec3D PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
     const Real p = 1.0f / (2*M_PI);
     Ray sampleRay(iPoint_v, sample_v);
 
-    Vec3D incoming = iColor * traceRay(depth+1, sampleRay, scene);
+    Color incoming = iColor * traceRay(depth+1, sampleRay, scene);
     return emission + p*incoming;
 }

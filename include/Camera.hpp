@@ -64,9 +64,9 @@ class Camera {
 
         /** <br><b>u</b> is the <b>x</b> axis, or the right. */
         Vec3D u;
-        /** <br><b>v</b> is the <b>y</b> axis, or the right. */
+        /** <br><b>v</b> is the <b>y</b> axis, or the up. */
         Vec3D v;
-        /** <br><b>w</b> is the <b>z</b> axis, or the right. */
+        /** <br><b>w</b> is the <b>z</b> axis, or the facing. */
         Vec3D w;
 
         /** Get a vector from the eye to pixel [i, j] */

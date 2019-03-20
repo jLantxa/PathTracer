@@ -19,12 +19,13 @@
 #ifndef _INCLUDE_PATHTRACER_LIGHT_H_
 #define _INCLUDE_PATHTRACER_LIGHT_H_
 
-#include <cstdint>
 #include "Common.hpp"
 #include "Vector3D.hpp"
 
+#include <cstdint>
+
 uint8_t toColorInt(Real component);
-uint32_t colorGetARGB(Vec3D& v);
+uint32_t colorGetARGB(Color& v);
 Real colorClamp(Real x);
 
 class Ray {

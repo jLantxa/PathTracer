@@ -86,7 +86,7 @@ Surface& Camera::getSurface() {
     return surface;
 }
 
-Color Camera::getVectorToPixel(unsigned i, unsigned j) {
+Vec3D Camera::getVectorToPixel(unsigned i, unsigned j) {
     Real right = (1 - 2 * (i + 0.5) / width) * tan(fov/2);
     Real up = (1 - 2*(j + 0.5) / height) * tan(fov/2)/aspectRatio;
     Vec3D vector = w + right*u + up*v;

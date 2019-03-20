@@ -39,6 +39,7 @@ struct Material& IObject3D::material() {
     return mMaterial;
 }
 
+
 /* Plane */
 Plane::Plane(struct Material material, Vec3D position_v, Vec3D normal_v)
 :   IObject3D(material),
@@ -62,6 +63,7 @@ Vec3D Plane::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
     return mNormal_v;
 }
 
+
 /* Triangle
  * Surface normal depends on the order of (A, B, C)
 */
@@ -81,9 +83,9 @@ Real Triangle::intersect(Ray& ray) {
     Vec3D rayDirection_v = ray.getDirection();
 
     Real tPlane = intersectPlane(rayOrigin_v, rayDirection_v, mA_v, mNormal_v);
-    if (tPlane < 0 || tPlane == std::numeric_limits<Real>::infinity()) {
+    if (tPlane < 0 || tPlane == infinity<Real>()) {
         // No intersection with containing plane
-        return -std::numeric_limits<Real>::infinity();
+        return -infinity<Real>();
     }
 
     // Test intersection inside triangle
@@ -107,7 +109,7 @@ Real Triangle::intersect(Ray& ray) {
         return tPlane;
     } else {
         // Outside triangle
-        return -std::numeric_limits<Real>::infinity();
+        return -infinity<Real>();
     }
 }
 
@@ -122,6 +124,7 @@ Vec3D Triangle::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
 Vec3D Triangle::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
     return mNormal_v;
 }
+
 
 /* Sphere */
 Sphere::Sphere(struct Material material, Vec3D center_V, Real radius)
@@ -140,12 +143,12 @@ Real Sphere::intersect(Ray& ray) {
     Deg2Solution t_sol;
     solveDeg2(a, b, c, t_sol);
     if (!t_sol.valid) {
-        return -std::numeric_limits<Real>::infinity();
+        return -infinity<Real>();
     }
 
     if (t_sol.x1 < 0) {
         if (t_sol.x2 < 0) {
-            return -std::numeric_limits<Real>::infinity();
+            return -infinity<Real>();
         } else {
             return t_sol.x2;
         }
@@ -169,4 +172,37 @@ Vec3D Sphere::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
 
 Vec3D Sphere::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
     return hitPoint_v - mCenter_v;
+}
+
+
+/* CompositeObject3D */
+Real CompositeObject3D::intersect(Ray& ray) {
+    return -infinity<Real>();
+
+    Real t_boundary = mBoundary->intersect(ray);
+    if (t_boundary < 0 || t_boundary == infinity<Real>()) {
+        return -infinity<Real>();
+    }
+    // Ray intersected the boundary
+    Real t;
+    intersectObjects(ray, mObjects, t);
+    return t;
+}
+
+// Protected
+IObject3D* CompositeObject3D::intersectedObject(Ray& ray) {
+    Real t;
+    return intersectObjects(ray, mObjects, t);
+}
+
+Vec3D CompositeObject3D::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    Ray ray(hitPoint_v, hitDirection_v);
+    IObject3D* iObject = intersectedObject(ray);
+    return iObject->getHitNormal(hitPoint_v, hitDirection_v);
+}
+
+Vec3D CompositeObject3D::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    Ray ray(hitPoint_v, hitDirection_v);
+    IObject3D* iObject = intersectedObject(ray);
+    return iObject->getHitNormal(hitPoint_v, hitDirection_v);
 }

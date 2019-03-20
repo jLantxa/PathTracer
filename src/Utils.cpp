@@ -18,15 +18,18 @@
 
 #include "Utils.hpp"
 #include "Common.hpp"
+#include "Objects.hpp"
 #include "Vector3D.hpp"
 #include "Light.hpp"
 
-#include <stdlib.h>
-#include <cstdint>
 #include <cmath>
-#include <limits>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 
-#include <stdio.h>
+#include <limits>
+#include <vector>
+
 #include "test/TestCommon.hpp"
 
 /** Calculate discriminant b^2 - 4ac */
@@ -71,7 +74,7 @@ void solveDeg2(Real a, Real b, Real c, struct Deg2Solution& result) {
 Real intersectPlane(Vec3D l0, Vec3D l, Vec3D p0, Vec3D n) {
     Real den = n.dot(l);
     if (den == 0) {
-        return -std::numeric_limits<Real>::infinity();
+        return -infinity<Real>();
     }
     Real num = n.dot(p0 - l0);
     Real t = num/den;
@@ -95,4 +98,17 @@ Vec3D sampleHemisphere(Vec3D& normal, uint16_t* Xi) {
         static_cast<Real>(sqrt(1-r))*w;
 
     return sample_v;
+}
+
+IObject3D* intersectObjects(Ray& ray, std::vector<IObject3D*>& objects, Real& t) {
+    IObject3D* object_tmp = nullptr;
+    t = infinity<Real>();
+    for (IObject3D* object : objects) {
+        Real t_tmp = object->intersect(ray);
+        if (t_tmp > 0 && t_tmp < t) {
+            object_tmp = object;
+            t = t_tmp;
+        }
+    }
+    return object_tmp;
 }

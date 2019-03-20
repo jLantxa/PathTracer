@@ -1,7 +1,7 @@
 /*
  * This source file is part of PathTracer
  *
- * Copyright 2018 Javier Lancha Vázquez
+ * Copyright 2019 Javier Lancha Vázquez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
