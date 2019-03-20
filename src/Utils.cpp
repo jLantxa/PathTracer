@@ -111,3 +111,15 @@ IObject3D* intersectObjects(Ray& ray, std::vector<IObject3D*>& objects, Real& t)
     }
     return object_tmp;
 }
+
+Real gammaFunc(Real x, Real gamma) {
+    return pow(x, gamma);
+}
+
+Color gammaFunc(Color c, Real gamma) {
+    return Color(
+        gammaFunc(c.x, gamma),
+        gammaFunc(c.y, gamma),
+        gammaFunc(c.z, gamma)
+    );
+}

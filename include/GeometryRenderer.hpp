@@ -29,9 +29,8 @@ public:
     GeometryRenderer();
     virtual ~GeometryRenderer();
 
-    virtual void renderScene(struct Scene& scene, Camera& camera);
-
 protected:
+    virtual void render(struct Scene& scene, Camera& camera);
     virtual Color traceRay(Ray& ray, struct Scene& scene);
 };
 

@@ -41,7 +41,7 @@ PathTracer::PathTracer(unsigned spp, unsigned depth)
 
 PathTracer::~PathTracer() { }
 
-void PathTracer::renderScene(struct Scene& scene, Camera& camera) {
+void PathTracer::render(struct Scene& scene, Camera& camera) {
     Surface& surface = camera.getSurface();
     const unsigned width = surface.getWidth();
     const unsigned height = surface.getHeight();
@@ -81,7 +81,7 @@ Color PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
     Vec3D sample_v = sampleHemisphere(iNormal_v, Xi);
     Real cos_theta = sample_v.dot(iNormal_v);
 
-    const Real p = 1.0f / (2*M_PI);
+    const Real p = 1.0/(2*M_PI);
     Ray sampleRay(iPoint_v, sample_v);
 
     Color incoming = iColor * traceRay(depth+1, sampleRay, scene);

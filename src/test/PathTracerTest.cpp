@@ -65,12 +65,12 @@ void buildScene(struct Scene* scene) {
     //lightCeil->material.emission = 0.05;
     scene->objects.push_back(lightCeil);
 
-    color.set(0.75, 0.75, 0.2);
+    color.set(0.75, 0.2, 0.2);
     v1.set(-4*sRad, 0, 0);
     v2.set(1, 0, 0);
     scene->objects.push_back(createPlane({color}, v1, v2));
 
-    color.set(0.75, 0.75, 0.2);
+    color.set(0.75, 0.2, 0.2);
     v1.set(4*sRad, 0, 0);
     v2.set(-1, 0, 0);
     scene->objects.push_back(createPlane({color}, v1, v2));
@@ -85,17 +85,17 @@ void buildScene(struct Scene* scene) {
     v2.set(0, 0, -1);
     scene->objects.push_back(createPlane({color}, v1, v2));
 
-    color.set(1, 0, 0);
+    color.set(0.707, 0, 0.707);
     v1.set(-2.5f*sRad, sRad, -200+sRad);
     scene->objects.push_back(createSphere({color}, v1, sRad));
 
-    color.set(0, 1, 0);
+    color.set(0.707, 0.707, 0);
     v1.set(0, 2*sRad, -200 + sRad+sRad);
     Sphere* greenSphere = createSphere({color}, v1, sRad);
     scene->objects.push_back(greenSphere);
 
-    color.set(0, 0, 1);
-    v1.set(2.5f*sRad, 2*sRad, -200+sRad);
+    color.set(0, 0.707, 0.707);
+    v1.set(2.5f*sRad, 2*sRad, -190+sRad);
     scene->objects.push_back(createSphere({color}, v1, sRad));
 
     Real lRad = 10;
@@ -150,6 +150,7 @@ int main (int argc, char* argv[]) {
     Vec3D camPos(0, 80, -0);
     Vec3D camFacing(0, -0.1, -1);
     Camera camera(width, height, fov, camPos, camFacing);
+    camera.setGammaCorrectionEnabled(true);
     Surface& surface = camera.getSurface();
     buildScene(&scene);
 

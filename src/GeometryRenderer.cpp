@@ -36,7 +36,7 @@ GeometryRenderer::~GeometryRenderer() {
 
 }
 
-void GeometryRenderer::renderScene(struct Scene& scene, Camera& camera) {
+void GeometryRenderer::render(struct Scene& scene, Camera& camera) {
     Surface& surface = camera.getSurface();
     const unsigned width = surface.getWidth();
     const unsigned height = surface.getHeight();

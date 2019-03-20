@@ -1,7 +1,7 @@
 /*
  * This source file is part of PathTracer
  *
- * Copyright 2018 Javier Lancha Vázquez
+ * Copyright 2018, 2019 Javier Lancha Vázquez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@
 #include "Vector3D.hpp"
 #include "Objects.hpp"
 
+#include <cmath>
 #include <vector>
 
 /** Calculate discriminant b^2 - 4ac */
@@ -46,5 +47,8 @@ template <typename T>
 inline T infinity() {
     return std::numeric_limits<T>::infinity();
 }
+
+Real gammaFunc(Real x, Real gamma);
+Color gammaFunc(Color c, Real gamma);
 
 #endif // _INCLUDE_PATHTRACER_UTILS_H_

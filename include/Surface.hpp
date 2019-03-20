@@ -33,6 +33,8 @@ class Surface {
         Color* operator[](unsigned i);
         void toPPM(const char* filename);
 
+        void applyGammaCorrection(Real gamma);
+
     private:
         unsigned width;
         unsigned height;

@@ -21,6 +21,7 @@
 #include "Common.hpp"
 #include "debug.hpp"
 #include "Light.hpp"
+#include "Utils.hpp"
 
 #include <cstdio>
 
@@ -64,4 +65,12 @@ void Surface::toPPM(const char* filename) {
         }
     }
     fclose(f);
+}
+
+void Surface::applyGammaCorrection(Real gamma) {
+    for (int i = 0; i < height; i++)  {
+        for (int j = 0; j < width; j++) {
+            color[j][i] = gammaFunc(color[j][i], gamma);
+        }
+    }
 }

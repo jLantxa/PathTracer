@@ -1,7 +1,7 @@
 /*
  * This source file is part of PathTracer
  *
- * Copyright 2018 Javier Lancha Vázquez
+ * Copyright 2018, 2019 Javier Lancha Vázquez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,15 @@
 
 static const char* TAG = "Camera";
 
+static const Real CAMERA_GAMMA = 1/2.2;
+
 Camera::Camera(unsigned width, unsigned height, float fov) :
         width(width),
         height(height),
         aspectRatio(1.0 * width / height),
         fov(degToRad(fov)),
-        surface(width, height)
+        surface(width, height),
+        gammaCorrectionEnabled(false)
 {
     position = Vec3D();
     u = Vec3D(1, 0, 0);     // Right
@@ -47,7 +50,8 @@ Camera::Camera(unsigned width, unsigned height, float fov, Vec3D pos, Vec3D faci
         fov(degToRad(fov)),
         position(pos),
         w(facing.normalize()),
-        surface(width, height)
+        surface(width, height),
+        gammaCorrectionEnabled(false)
 {
     v = Vec3D(0, 1, 0); // Up (to the sky)
     u = v.cross(w);     // Right
@@ -80,6 +84,18 @@ float Camera::getAspectRatio() {
 
 void Camera::setResolution(unsigned w, unsigned h) {
     surface = Surface(w, h);
+}
+
+void Camera::setGammaCorrectionEnabled(bool enabled) {
+    gammaCorrectionEnabled = enabled;
+}
+
+void Camera::onRenderFinished() {
+    Debug::Log::i(TAG, "onRenderFinished()");
+    if (gammaCorrectionEnabled) {
+        Debug::Log::i(TAG, "Apply gamma correction g=%.2f", CAMERA_GAMMA);
+        surface.applyGammaCorrection(CAMERA_GAMMA);
+    }
 }
 
 Surface& Camera::getSurface() {

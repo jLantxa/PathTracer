@@ -38,7 +38,13 @@ class IRenderer {
 public:
     virtual ~IRenderer() = default;
 
-    virtual void renderScene(struct Scene& scene, Camera& camera) = 0;
+    void renderScene(struct Scene& scene, Camera& camera) {
+        render(scene, camera);
+        camera.onRenderFinished();
+    }
+
+protected:
+    virtual void render(struct Scene& scene, Camera& camera) = 0;
 };
 
 #endif // _INCLUDE_PATHTRACER_RENDERER_H_

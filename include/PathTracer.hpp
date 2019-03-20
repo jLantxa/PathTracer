@@ -35,8 +35,6 @@ public:
     PathTracer(unsigned spp, unsigned depth);
     virtual ~PathTracer();
 
-    virtual void renderScene(struct Scene& scene, Camera& camera);
-
 private:
     unsigned mMaxDepth;
     unsigned mSPP;
@@ -44,6 +42,7 @@ private:
     // Random seed for erand48
     uint16_t Xi[3];
 
+    virtual void render(struct Scene& scene, Camera& camera);
     Color traceRay(unsigned depth, Ray& ray, struct Scene& scene);
 };
 
