@@ -109,7 +109,6 @@ class Triangle : public IObject3D {
         virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
         virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
 
-        // TODO: Return the cubic enclosure of the triangle
         virtual struct Enclosure getEnclosure();
 
     private:
