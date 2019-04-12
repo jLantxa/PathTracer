@@ -92,8 +92,8 @@ namespace Debug
         }
 
         template <typename... Arg>
-        static void v(const char* tag, const char* fmt, Arg... args) {
-            log(VERBOSE, tag, fmt, args...);
+        static void v(const char* tag, Arg... args) {
+            log(VERBOSE, tag, args...);
         }
 
     };
