@@ -39,9 +39,6 @@ private:
     unsigned mMaxDepth;
     unsigned mSPP;
 
-    // Random seed for erand48
-    uint16_t Xi[3];
-
     virtual void render(struct Scene& scene, Camera& camera);
     Color traceRay(unsigned depth, Ray& ray, struct Scene& scene);
 };

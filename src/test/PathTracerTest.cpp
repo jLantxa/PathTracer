@@ -111,11 +111,6 @@ void buildScene(struct Scene* scene) {
     scene->objects.push_back(lightBall2);
 }
 
-void testSample(uint16_t* Xi) {
-    Vec3D normal(0, 1, 0);
-    Vec3D sample = sampleHemisphere(normal, Xi);
-}
-
 int main (int argc, char* argv[]) {
     unsigned width, height, spp, depth, aa;
     float fov;

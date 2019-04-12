@@ -39,7 +39,7 @@ void solveDeg2(Real a, Real b, Real c, struct Deg2Solution& result);
 
 Real intersectPlane(Vec3D l0, Vec3D l, Vec3D p0, Vec3D n);
 
-Vec3D sampleHemisphere(Vec3D& normal, uint16_t* Xi);
+Vec3D sampleHemisphere(Vec3D& normal);
 
 IObject3D* intersectObjects(Ray& ray, std::vector<IObject3D*>& objects, Real& t);
 

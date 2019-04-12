@@ -103,7 +103,7 @@ Color PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
     Color iColor = iObject->color();
     Color emission = iObject->material().emission*iColor;
 
-    Vec3D sample_v = sampleHemisphere(iNormal_v, Xi);
+    Vec3D sample_v = sampleHemisphere(iNormal_v);
     Real cos_theta = sample_v.dot(iNormal_v);
 
     const Real p = 1.0/(2*M_PI);

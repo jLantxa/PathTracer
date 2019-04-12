@@ -31,6 +31,9 @@
 #include <limits>
 #include <vector>
 
+// Random seed for erand48
+static uint16_t Xi[3];
+
 /** Calculate discriminant b^2 - 4ac */
 inline Real discriminant(Real a, Real b, Real c) {
     return (b*b - 4*a*c);
@@ -80,7 +83,7 @@ Real intersectPlane(Vec3D l0, Vec3D l, Vec3D p0, Vec3D n) {
     return t;
 }
 
-Vec3D sampleHemisphere(Vec3D& normal, uint16_t* Xi) {
+Vec3D sampleHemisphere(Vec3D& normal) {
     double phi = 2 * M_PI * erand48(Xi);
     double r = erand48(Xi);
     double rs = sqrt(r);
