@@ -1,7 +1,7 @@
 /*
  * This source file is part of PathTracer
  *
- * Copyright 2018, 2019 Javier Lancha Vázquez
+ * Copyright 2019 Javier Lancha Vázquez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,19 @@
  * limitations under the License.
 */
 
-#include <cstdint>
+#ifndef _INCLUDE_PATHTRACER_SCENE_PARSER_H_
+#define _INCLUDE_PATHTRACER_SCENE_PARSER_H_
 
-#include "Common.hpp"
-#include "Light.hpp"
-#include "Vector3D.hpp"
+#include "Objects.hpp"
 
+enum ParserError : int {
+    PARSER_OK = 0,
+    PARSER_ERROR_NO_FILE,
+    PARSER_ERROR_INVALID_FORMAT,
+    /// \todo Remove when finished
+    PARSER_ERROR_UNFINISHED,
+};
 
-Ray::Ray(Vec3D origin_m, Vec3D dir_v) :
-    mOrigin_v(origin_m),
-    mDirection_v(dir_v.normalize()) { }
+ParserError parseSceneFromXml(const char* filename, struct Scene& scene);
 
-Ray::~Ray() {}
-
-Vec3D Ray::getOrigin() {
-    return mOrigin_v;
-}
-
-Vec3D Ray::getDirection() {
-    return mDirection_v;
-}
-
-Vec3D Ray::point(Real t) {
-    return mOrigin_v + t*mDirection_v;
-}
+#endif // _INCLUDE_PATHTRACER_SCENE_PARSER_H_

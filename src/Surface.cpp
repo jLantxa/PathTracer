@@ -23,6 +23,7 @@
 #include "Light.hpp"
 #include "Utils.hpp"
 
+#include <algorithm>
 #include <cstdio>
 
 static const char* TAG = "Surface";
@@ -58,9 +59,9 @@ Color* Surface::operator[](unsigned i) {
 void Surface::toPPM(const char* filename) {
     FILE *f = fopen(filename, "w");
     fprintf(f, "P3\n%d %d\n%d\n", width, height, 255);
-    for (int i = 0; i < height; i++)  {
-        for (int j = 0; j < width; j++) {
-            Color c = color[j][i];
+    for (int j = 0; j < height; j++)  {
+        for (int i = 0; i < width; i++) {
+            Color c = color[i][j];
             fprintf(f,"%d %d %d ", toColorInt(c.x), toColorInt(c.y), toColorInt(c.z));
         }
     }
@@ -68,9 +69,17 @@ void Surface::toPPM(const char* filename) {
 }
 
 void Surface::applyGammaCorrection(Real gamma) {
-    for (int i = 0; i < height; i++)  {
-        for (int j = 0; j < width; j++) {
-            color[j][i] = gammaFunc(color[j][i], gamma);
+    for (int i = 0; i < width; i++)  {
+        for (int j = 0; j < height; j++) {
+            color[i][j] = gammaFunc(color[i][j], gamma);
+        }
+    }
+}
+
+void Surface::clear() {
+    for (int i = 0; i < width; i++)  {
+        for (int j = 0; j < height; j++) {
+            color[i][j].set(0, 0, 0);
         }
     }
 }

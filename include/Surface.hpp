@@ -20,6 +20,7 @@
 #define _INCLUDE_PATHTRACER_SURFACE_H_
 
 #include "Light.hpp"
+#include "Utils.hpp"
 
 /* A container for a render result */
 class Surface {
@@ -34,6 +35,7 @@ class Surface {
         void toPPM(const char* filename);
 
         void applyGammaCorrection(Real gamma);
+        void clear();
 
     private:
         unsigned width;

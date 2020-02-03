@@ -17,11 +17,8 @@ TRACER_SOURCES += \
 	$(SRC)/Camera.cpp \
 	$(SRC)/Light.cpp \
 	$(SRC)/Vector3D.cpp \
-	$(SRC)/Utils.cpp
-
-PATH_TRACER_TEST_FLAGS += \
-	-DPATH_TRACER_TIME_ESTIMATION=1 \
-	-DDEBUG_LEVEL=6
+	$(SRC)/Utils.cpp \
+	$(SRC)/SceneParser.cpp
 
 init:
 	@mkdir build/
@@ -37,7 +34,17 @@ count-lines:
 docs:
 	doxygen
 
-PathTracerTest:
-	@$(CC) $(CFLAGS) $(PATH_TRACER_TEST_FLAGS) \
+LIBXML2_LIBS=`xml2-config --libs`
+LIBXML2_CFLAGS=`xml2-config --cflags`
+
+VISUALIZER=$(SRC)/visualizer
+VISUALIZER_FLAGS += \
+	-DSCENE_PARSER_TEMPORARY \
+	-DVISUALIZER_DUMP \
+	-DDEBUG_LEVEL=6 \
+	-lSDL2 \
+	$(LIBXML2_LIBS) $(LIBXML2_CFLAGS)
+Visualizer:
+	@$(CC) $(CFLAGS) $(VISUALIZER_FLAGS) \
 	-fopenmp -I $(INCLUDE)/ \
-	$(TRACER_SOURCES) $(TEST)/PathTracerTest.cpp -o $(BUILD)/PathTracerTest
+	$(TRACER_SOURCES) $(VISUALIZER)/Visualizer.cpp -o $(BUILD)/Visualizer

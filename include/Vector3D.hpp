@@ -22,7 +22,7 @@
 #include <cmath>
 
 /** A 3D vector with its typical operators */
-template <typename T>class Vector3D {
+template <typename T> class Vector3D {
 public:
     T x, y, z;
 

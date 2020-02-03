@@ -16,6 +16,10 @@
  * limitations under the License.
 */
 
+/* WARNING:
+ * This test unit is deprecated by the Visualizer
+*/
+
 #include "PathTracer.hpp"
 #include "Common.hpp"
 #include "Utils.hpp"

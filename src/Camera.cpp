@@ -62,11 +62,11 @@ Camera::~Camera() {
     Debug::Log::v(TAG, "Delete camera");
 }
 
-float Camera::getWidth() {
+unsigned int Camera::getWidth() {
     return width;
 }
 
-float Camera::getHeight() {
+unsigned int Camera::getHeight() {
     return height;
 }
 

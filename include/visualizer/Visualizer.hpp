@@ -1,7 +1,7 @@
 /*
  * This source file is part of PathTracer
  *
- * Copyright 2018, 2019 Javier Lancha Vázquez
+ * Copyright 2019 Javier Lancha Vázquez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,35 @@
  * limitations under the License.
 */
 
-#include <cstdint>
+#ifndef _INCLUDE_PATHTRACER_VISUALIZER_H_
+#define _INCLUDE_PATHTRACER_VISUALIZER_H_
 
-#include "Common.hpp"
-#include "Light.hpp"
-#include "Vector3D.hpp"
+#include <SDL2/SDL.h>
 
+#include "Camera.hpp"
+#include "Surface.hpp"
 
-Ray::Ray(Vec3D origin_m, Vec3D dir_v) :
-    mOrigin_v(origin_m),
-    mDirection_v(dir_v.normalize()) { }
+class VisualizerWindow {
+public:
+    VisualizerWindow(Camera& camera);
+    virtual ~VisualizerWindow();
 
-Ray::~Ray() {}
+    void update();
 
-Vec3D Ray::getOrigin() {
-    return mOrigin_v;
-}
+private:
+    SDL_Window* mWindow;
+    SDL_Renderer* mRenderer;
 
-Vec3D Ray::getDirection() {
-    return mDirection_v;
-}
+    Camera& mCamera;
 
-Vec3D Ray::point(Real t) {
-    return mOrigin_v + t*mDirection_v;
-}
+    const char* mTitle = "PathTracer";
+    unsigned int mWidth;
+    unsigned int mHeight;
+
+    void init();
+    void render();
+};
+
+void waitForQuit();
+
+#endif // _INCLUDE_PATHTRACER_VISUALIZER_H_

@@ -38,7 +38,7 @@
 
 struct Material {
     Color color;
-    float emission = 0;
+    Color emission;
 };
 
 struct Enclosure {
@@ -78,6 +78,16 @@ class IObject3D {
     protected:
         struct Material mMaterial;
 };
+
+/** A container of objects and light sources */
+/// \todo Delete objects
+struct Scene {
+    std::vector<IObject3D*> objects;
+    Color backgroundColor;
+};
+
+/// \todo Define a Cube object
+/// \todo Define a Square object
 
 /** A plane object derived from the IObject3D base */
 class Plane : public IObject3D {
@@ -126,7 +136,7 @@ class Sphere : public IObject3D {
         virtual Vec3D getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
         virtual Vec3D getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v);
 
-        // TODO: Return the cubic enclosure of the sphere
+        /// \todo Return the cubic enclosure of the sphere
         virtual struct Enclosure getEnclosure();
 
         Vec3D center() { return mCenter_v; }
@@ -162,8 +172,7 @@ public:
     virtual struct Enclosure getEnclosure();
 
 protected:
-    /* TODO:
-     * Define a Cube object to use as a container boundary
+    /** \todo Define a Cube object to use as a container boundary.
      * Can this pointer leak?
     */
     IObject3D* mBoundary;

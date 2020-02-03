@@ -33,7 +33,7 @@
 
 static const char* TAG = "PathTracer";
 
-// TODO: This value is completely random
+/// \todo ACCURACY value is completely random
 Real ACCURACY = 0.0001;
 
 PathTracer::PathTracer(unsigned spp, unsigned depth)
@@ -48,18 +48,9 @@ void PathTracer::render(struct Scene& scene, Camera& camera) {
     const unsigned height = surface.getHeight();
     Debug::Log::i(TAG, "Render scene: %dx%d", width, height);
 
-#ifdef PATH_TRACER_TIME_ESTIMATION
-    CircularTimeArray<int> durations(3);
-#endif
-
+    surface.clear();
     for (int n = 1; n <= mSPP; n++) {
-#ifdef PATH_TRACER_TIME_ESTIMATION
-        auto start = std::chrono::high_resolution_clock::now();
-        Debug::Log::i(TAG, "Rendering %d/%d: %.2f%% ETA: %.0f s",
-            n, mSPP, 100.0*(n-1)/(mSPP), (mSPP+1-n)*durations.mean()/1000.0);
-#else
         Debug::Log::i(TAG, "Rendering %d/%d: %.2f%%", n, mSPP, 100.0*(n-1)/(mSPP));
-#endif
 
         #pragma omp parallel for schedule(static)
         for (int j = 0; j < height; j++) {
@@ -68,12 +59,6 @@ void PathTracer::render(struct Scene& scene, Camera& camera) {
                 surface[i][j] += traceRay(0, ray, scene);
             }
         }
-
-#ifdef PATH_TRACER_TIME_ESTIMATION
-        auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-        durations.add(duration);
-#endif
     }
 
     const Real ispp = 1.0f/mSPP;
@@ -92,7 +77,7 @@ Color PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
     Real t;
     IObject3D* iObject = intersectObjects(ray, scene.objects, t);
     if (iObject == nullptr) {
-        return Color();
+            return Color();
     }
 
     Vec3D iPoint_v = ray.point(t);
@@ -100,8 +85,8 @@ Color PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
     Vec3D iNormal_v = iObject->getHitNormal(iPoint_v, iDirection_v);
     iPoint_v.set(iPoint_v + ACCURACY*iNormal_v);
 
-    Color iColor = iObject->color();
-    Color emission = iObject->material().emission*iColor;
+    struct Material iMaterial = iObject->material();
+    Color emission = iMaterial.emission;
 
     Vec3D sample_v = sampleHemisphere(iNormal_v);
     Real cos_theta = sample_v.dot(iNormal_v);
@@ -109,6 +94,6 @@ Color PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
     const Real p = 1.0/(2*M_PI);
     Ray sampleRay(iPoint_v, sample_v);
 
-    Color incoming = iColor * traceRay(depth+1, sampleRay, scene);
+    Color incoming = iMaterial.color * traceRay(depth+1, sampleRay, scene);
     return emission + p*incoming;
 }

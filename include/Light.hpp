@@ -24,10 +24,6 @@
 
 #include <cstdint>
 
-uint8_t toColorInt(Real component);
-uint32_t colorGetARGB(Color& v);
-Real colorClamp(Real x);
-
 class Ray {
     public:
         /**

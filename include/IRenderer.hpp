@@ -27,13 +27,6 @@
 
 #include <vector>
 
-/** A container of objects and light sources */
-// TODO: Delete objects
-struct Scene {
-    std::vector<IObject3D*> objects;
-    Color backgroundColor;
-};
-
 class IRenderer {
 public:
     virtual ~IRenderer() = default;

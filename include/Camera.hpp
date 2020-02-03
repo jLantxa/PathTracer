@@ -39,8 +39,8 @@ class Camera {
         /** Get a Ray from the eye to pixel [i, j] */
         Ray getRayToPixel(unsigned i, unsigned j);
 
-        float getWidth();
-        float getHeight();
+        unsigned int getWidth();
+        unsigned int getHeight();
         float getFov();
         float getFovInRad();
         float getAspectRatio();

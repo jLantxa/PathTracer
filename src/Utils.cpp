@@ -69,7 +69,6 @@ void solveDeg2(Real a, Real b, Real c, struct Deg2Solution& result) {
         }
     }
 
-
     result.valid = true;
 }
 
@@ -113,6 +112,26 @@ IObject3D* intersectObjects(Ray& ray, std::vector<IObject3D*>& objects, Real& t)
         }
     }
     return object_tmp;
+}
+
+uint32_t colorGetARGB(Color& color) {
+    uint32_t argb = 0xFF000000;
+    // Valid values from 0 to 1.0
+    argb += (static_cast<uint32_t>(colorClamp(color.x) * 0xFF) << 16) & 0x00FF0000;
+    argb += (static_cast<uint32_t>(colorClamp(color.y) * 0xFF) <<  8) & 0x0000FF00;
+    argb +=  static_cast<uint32_t>(colorClamp(color.z) * 0xFF)        & 0x000000FF;
+    return argb;
+}
+
+uint8_t toColorInt(Real component) {
+    return static_cast<uint8_t>(colorClamp(component) * 0xFF);
+}
+
+
+Real colorClamp(Real x) {
+    if (x < 0) return 0;
+    else if (x > 1) return 1;
+    else return x;
 }
 
 Real gammaFunc(Real x, Real gamma) {

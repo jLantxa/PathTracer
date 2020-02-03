@@ -63,7 +63,7 @@ Vec3D Plane::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
     return mNormal_v;
 }
 
-// TODO: This is a placeholder
+/// \todo This is a placeholder
 struct Enclosure Plane::getEnclosure() {
     const Real nInf = -infinity<Real>();
     const Real inf = infinity<Real>();
@@ -253,7 +253,7 @@ struct Enclosure CompositeObject3D::getEnclosure() {
     return mEnclosure;
 }
 
-// TODO: Update enclosure and boundary
+/// \todo Update enclosure and boundary
 void CompositeObject3D::updateBoundary() {
 
 }

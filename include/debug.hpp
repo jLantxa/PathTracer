@@ -1,5 +1,7 @@
 /*
- * Copyright 2019 Javier Lancha Vázquez
+ * This source file is part of PathTracer
+ *
+ * Copyright 2018, 2019  Javier Lancha Vázquez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +16,8 @@
  * limitations under the License.
 */
 
-#ifndef _INCLUDE_PATHTRACER_DEBUG_H_
-#define _INCLUDE_PATHTRACER_DEBUG_H_
+#ifndef _PATH_TRACER_INCLUDE_DEBUG_HPP_
+#define _PATH_TRACER_INCLUDE_DEBUG_HPP_
 
 #include <cstdio>
 
@@ -23,31 +25,32 @@ namespace Debug
 {
     enum DebugLevel : int {
         NONE    = -1,
-        INFO    = 0,
+        ERROR    = 0,
         WARNING = 1,
-        ERROR   = 2,
+        INFO   = 2,
         DEBUG   = 3,
         VERBOSE = 4,
     };
 
     static const char* level_tags[] {
-        [DebugLevel::INFO]      = "I",
-        [DebugLevel::WARNING]   = "W",
         [DebugLevel::ERROR]     = "E",
+        [DebugLevel::WARNING]   = "W",
+        [DebugLevel::INFO]     = "I",
         [DebugLevel::DEBUG]     = "D",
         [DebugLevel::VERBOSE]   = "V"
     };
 
     const static int DEFAULT_LEVEL = INFO;
 
-#ifdef NDEBUG
+#if defined(NDEBUG) && NDEBUG !=0
     static int defined_level = NONE;
-#endif
-
-#ifdef DEBUG_LEVEL
-    static int defined_level = DEBUG_LEVEL;
 #else
-    static int defined_level = DEFAULT_LEVEL;
+    #ifdef DEBUG_LEVEL
+        static int defined_level = DEBUG_LEVEL;
+    #else
+        static int defined_level = DEFAULT_LEVEL;
+    #endif
+
 #endif
 
     template <typename... Args>
@@ -72,8 +75,8 @@ namespace Debug
     class Log {
     public:
         template <typename... Args>
-        static void i(const char* tag, Args... args) {
-            log(INFO, tag, args...);
+        static void e(const char* tag, Args... args) {
+            log(ERROR, tag, args...);
         }
 
         template <typename... Args>
@@ -82,8 +85,8 @@ namespace Debug
         }
 
         template <typename... Args>
-        static void e(const char* tag, Args... args) {
-            log(ERROR, tag, args...);
+        static void i(const char* tag, Args... args) {
+            log(INFO, tag, args...);
         }
 
         template <typename... Args>
@@ -99,4 +102,4 @@ namespace Debug
     };
 }
 
-#endif // _INCLUDE_PATHTRACER_DEBUG_H_
+#endif // _MODEM_INCLUDE_DEBUG_HPP_
