@@ -21,9 +21,9 @@
 
 #include "Objects.hpp"
 
+#ifndef SCENE_PARSER_TEMPORARY
 static const char* LOG_TAG = "SceneParser";
 
-#ifndef SCENE_PARSER_TEMPORARY
 #include <cstring>
 
 #include <libxml/parser.h>
@@ -172,6 +172,7 @@ ParserError parse(const char* filename, struct Scene& scene) {
 /// \todo Empty scene
 ParserError parseSceneFromXml(const char* filename, struct Scene& scene) {
 #ifdef SCENE_PARSER_TEMPORARY
+    (void) filename;
     buildScene(scene);
     return PARSER_OK;
 #else

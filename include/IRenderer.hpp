@@ -27,16 +27,23 @@
 
 #include <vector>
 
+/**
+ * IRenderer is a base class for all renderers to inherit.
+ * It provides an interface method renderScene to encapsulate the common
+ * behaviour of all renderers.
+*/
 class IRenderer {
 public:
     virtual ~IRenderer() = default;
 
+    /** Render a scene and notify the camera object when finished */
     void renderScene(struct Scene& scene, Camera& camera) {
         render(scene, camera);
         camera.onRenderFinished();
     }
 
 protected:
+    /** Internal function to render a scene */
     virtual void render(struct Scene& scene, Camera& camera) = 0;
 };
 

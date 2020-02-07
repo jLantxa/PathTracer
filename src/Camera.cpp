@@ -32,8 +32,8 @@ static const Real CAMERA_GAMMA = 1/2.2;
 Camera::Camera(unsigned width, unsigned height, float fov) :
         width(width),
         height(height),
-        aspectRatio(1.0 * width / height),
         fov(degToRad(fov)),
+        aspectRatio(1.0 * width / height),
         surface(width, height),
         gammaCorrectionEnabled(false)
 {
@@ -46,11 +46,11 @@ Camera::Camera(unsigned width, unsigned height, float fov) :
 Camera::Camera(unsigned width, unsigned height, float fov, Vec3D pos, Vec3D facing) :
         width(width),
         height(height),
-        aspectRatio(1.0 * width / height),
         fov(degToRad(fov)),
+        aspectRatio(1.0 * width / height),
+        surface(width, height),
         position(pos),
         w(facing.normalize()),
-        surface(width, height),
         gammaCorrectionEnabled(false)
 {
     v = Vec3D(0, 1, 0); // Up (to the sky)

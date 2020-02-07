@@ -19,17 +19,21 @@
 #ifndef _INCLUDE_PATHTRACER_VISUALIZER_H_
 #define _INCLUDE_PATHTRACER_VISUALIZER_H_
 
+#include <string>
 #include <SDL2/SDL.h>
 
 #include "Camera.hpp"
 #include "Surface.hpp"
+#include "PathTracer.hpp"
 
-class VisualizerWindow {
+class VisualizerWindow : public IResultsListener {
 public:
     VisualizerWindow(Camera& camera);
     virtual ~VisualizerWindow();
 
     void update();
+    void onPartialResult(struct Scene& scene, Camera& camera);
+    void onRenderFinished(struct Scene&, Camera& camera);
 
 private:
     SDL_Window* mWindow;
@@ -37,7 +41,9 @@ private:
 
     Camera& mCamera;
 
-    const char* mTitle = "PathTracer";
+    const std::string TITLE = "PathTracer";
+    const std::string TITLE_RENDERING = "Rendering...";
+    const std::string TITLE_FINISHED = "Done";
     unsigned int mWidth;
     unsigned int mHeight;
 

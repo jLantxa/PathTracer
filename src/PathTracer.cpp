@@ -25,6 +25,7 @@
 #include "Surface.hpp"
 #include "Utils.hpp"
 
+#include <algorithm>
 #include <chrono>
 #include <limits>
 #include <vector>
@@ -36,37 +37,98 @@ static const char* TAG = "PathTracer";
 /// \todo ACCURACY value is completely random
 Real ACCURACY = 0.0001;
 
+void PathTracer::calculateBlocks(std::vector<Block>& blocks, unsigned int width, unsigned int height) {
+    for (unsigned int i = 0; i < width; i += mBlockWidth) {
+        unsigned int right = i + mBlockWidth;
+        if (right > width) right = width;
+
+        for (unsigned int j = 0; j < height; j += mBlockWidth) {
+            unsigned int down = j + mBlockWidth;
+            if (down > height) down = height;
+
+            Block block = {
+                .left = i,
+                .up = j,
+                .right = right,
+                .down = down
+            };
+            blocks.push_back(block);
+        }
+    }
+}
+
+void PathTracer::reorderBlocks(std::vector<Block>& blocks, unsigned width, unsigned height) {
+    int cx = width / 2;
+    int cy = height / 2;
+    std::sort(blocks.begin(), blocks.end(),
+        [&](const Block& lhs, const Block& rhs)-> bool {
+            int lx = (lhs.left + lhs.right) / 2;
+            int ly = (lhs.up + lhs.down) / 2;
+            int rx = (rhs.left + rhs.right) / 2;
+            int ry = (rhs.up + rhs.down) / 2;
+
+            float dl = pow(lx - cx, 2) + pow(ly - cy, 2);
+            float dr = pow(rx - cx, 2) + pow(ry - cy, 2);
+
+            return dl < dr;
+        }
+    );
+}
+
 PathTracer::PathTracer(unsigned spp, unsigned depth)
-:   mSPP(spp), mMaxDepth(depth)
+:   mMaxDepth(depth), mSPP(spp)
 { }
 
 PathTracer::~PathTracer() { }
+
+void PathTracer::addCallback(IResultsListener* listener) {
+    mPartialResultListeners.push_back(listener);
+}
+
+void PathTracer::notifyPartialResult(struct Scene& scene, Camera& camera) {
+    for(IResultsListener* listener : mPartialResultListeners) {
+        listener->onPartialResult(scene, camera);
+    }
+}
+
+void PathTracer::notifyRenderFinished(struct Scene& scene, Camera& camera) {
+    for(IResultsListener* listener : mPartialResultListeners) {
+        listener->onRenderFinished(scene, camera);
+    }
+}
+
+void PathTracer::setBlockSize(unsigned int width, unsigned int height) {
+    mBlockWidth = width;
+    mBlockHeight = height;
+}
 
 void PathTracer::render(struct Scene& scene, Camera& camera) {
     Surface& surface = camera.getSurface();
     const unsigned width = surface.getWidth();
     const unsigned height = surface.getHeight();
+    surface.clear();
     Debug::Log::i(TAG, "Render scene: %dx%d", width, height);
 
-    surface.clear();
-    for (int n = 1; n <= mSPP; n++) {
-        Debug::Log::i(TAG, "Rendering %d/%d: %.2f%%", n, mSPP, 100.0*(n-1)/(mSPP));
+    std::vector<Block> blocks;
+    calculateBlocks(blocks, width, height);
+    reorderBlocks(blocks, width, height);
 
-        #pragma omp parallel for schedule(static)
-        for (int j = 0; j < height; j++) {
-            for (int i = 0; i < width; i++) {
+    for (unsigned int b = 0; b < blocks.size(); b++) {
+        #pragma omp parallel for
+        for (unsigned int i = blocks[b].left; i < blocks[b].right; i++) {
+            for (unsigned int j = blocks[b].up; j < blocks[b].down; j++) {
                 Ray ray = camera.getRayToPixel(i, j);
-                surface[i][j] += traceRay(0, ray, scene);
+                for (unsigned int n = 0; n < mSPP; n++) {
+                    surface[i][j] += traceRay(0, ray, scene);
+                }
+                surface[i][j] *= 1.0f/mSPP;
             }
         }
+
+        notifyPartialResult(scene, camera);
     }
 
-    const Real ispp = 1.0f/mSPP;
-    for (int j = 0; j < height; j++) {
-        for (int i = 0; i < width; i++) {
-            surface[i][j] *= ispp;
-        }
-    }
+    notifyRenderFinished(scene, camera);
 }
 
 Color PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
@@ -89,7 +151,6 @@ Color PathTracer::traceRay(unsigned depth, Ray& ray, struct Scene& scene) {
     Color emission = iMaterial.emission;
 
     Vec3D sample_v = sampleHemisphere(iNormal_v);
-    Real cos_theta = sample_v.dot(iNormal_v);
 
     const Real p = 1.0/(2*M_PI);
     Ray sampleRay(iPoint_v, sample_v);

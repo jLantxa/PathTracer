@@ -1,5 +1,5 @@
 CC=clang++
-CFLAGS=-std=c++17 -O3 -Werror
+CFLAGS=-std=c++17 -O3 -Wall -Werror -Wunused -Wunused-parameter
 
 BUILD=build
 

@@ -19,6 +19,7 @@
 #include "visualizer/Visualizer.hpp"
 
 #include <SDL2/SDL.h>
+#include <thread>
 
 #include "debug.hpp"
 
@@ -63,11 +64,11 @@ void VisualizerWindow::init() {
         Uint32 windowFlag = SDL_WINDOW_OPENGL;
 
         mWindow = SDL_CreateWindow (
-            mTitle,                     // title
-            SDL_WINDOWPOS_UNDEFINED,    // initial x
-            SDL_WINDOWPOS_UNDEFINED,    // initial y
-            mWidth,                     // width
-            mHeight,                    // height
+            (TITLE + " - " + TITLE_RENDERING).c_str(),  // title
+            SDL_WINDOWPOS_UNDEFINED,                    // initial x
+            SDL_WINDOWPOS_UNDEFINED,                    // initial y
+            mWidth,                                     // width
+            mHeight,                                    // height
             windowFlag
         );
 
@@ -102,6 +103,21 @@ void VisualizerWindow::update() {
 
     SDL_RenderClear(mRenderer);
     render();
+}
+
+void VisualizerWindow::onPartialResult(struct Scene& scene, Camera& camera) {
+    (void) scene;
+    (void) camera;
+
+    update();
+}
+
+void VisualizerWindow::onRenderFinished(struct Scene& scene, Camera& camera) {
+    (void) scene;
+    (void) camera;
+
+    update();
+    SDL_SetWindowTitle(mWindow, (TITLE + " - " + TITLE_FINISHED).c_str());
 }
 
 void VisualizerWindow::render() {
@@ -141,6 +157,7 @@ int main(int argc, char* argv[]) {
         Debug::Log::e(TAG, "Usage: Visualizer [filename] width height fov spp depth");
         return -1;
     }
+
     const char* filename = (argc == 7)? argv[1] : DEFAULT_FILENAME;
     const int o = (argc == 7)? 1 : 0;
     unsigned int width = atoi(argv[1+o]);
@@ -148,6 +165,7 @@ int main(int argc, char* argv[]) {
     float fov = atof(argv[3+o]);
     unsigned int spp = atoi(argv[4+o]);
     unsigned int depth = atoi(argv[5+o]);
+
     if (width <= 0 || height <= 0) {
         Debug::Log::e(TAG, "ERROR: Surface cannot have null size");
         return -1;
@@ -164,20 +182,28 @@ int main(int argc, char* argv[]) {
 
     struct Scene scene;
     ParserError ret = parseSceneFromXml(filename, scene);
+    if (ret != PARSER_OK) {
+        Debug::Log::e(TAG, "Error %d while parsing scene xml", ret);
+        return ret;
+    }
+
 
     Vec3D camPos(0, 80, -0);
     Vec3D camFacing(0, -0.1, -1);
     Camera camera(width, height, fov, camPos, camFacing);
     camera.setGammaCorrectionEnabled(true);
 
-    // This goes in a thread
-    IRenderer* renderer = new PathTracer(spp, depth);
-    renderer->renderScene(scene, camera);
-
     VisualizerWindow window(camera);
+    PathTracer renderer(spp, depth);
+    renderer.addCallback(&window);
+
+    // This goes in a thread
+    std::thread renderThread(&PathTracer::renderScene, &renderer, std::ref(scene), std::ref(camera));
+    renderThread.detach();
+    //renderer.renderScene(scene, camera);
+
     waitForQuit();
     camera.getSurface().toPPM("visualizer.ppm");
 
-    delete renderer;
     return 0;
 }

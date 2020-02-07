@@ -52,6 +52,8 @@ Real Plane::intersect(Ray& ray) {
 }
 
 Vec3D Plane::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    (void) hitPoint_v;
+
     if (hitDirection_v.dot(mNormal_v) < 0) {
         return mNormal_v;
     } else {
@@ -60,6 +62,9 @@ Vec3D Plane::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
 }
 
 Vec3D Plane::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    (void) hitPoint_v;
+    (void) hitDirection_v;
+
     return mNormal_v;
 }
 
@@ -125,6 +130,8 @@ Real Triangle::intersect(Ray& ray) {
 }
 
 Vec3D Triangle::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    (void) hitPoint_v;
+
     if (hitDirection_v.dot(mNormal_v) < 0) {
         return mNormal_v;
     } else {
@@ -133,6 +140,9 @@ Vec3D Triangle::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
 }
 
 Vec3D Triangle::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    (void) hitPoint_v;
+    (void) hitDirection_v;
+
     return mNormal_v;
 }
 
@@ -189,6 +199,8 @@ Real Sphere::intersect(Ray& ray) {
 }
 
 Vec3D Sphere::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    (void) hitPoint_v;
+
     Vec3D surfNormal = getSurfaceNormal(hitPoint_v, hitDirection_v);
     if (hitDirection_v.dot(surfNormal) < 0) {
         return surfNormal;
@@ -198,6 +210,8 @@ Vec3D Sphere::getHitNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
 }
 
 Vec3D Sphere::getSurfaceNormal(Vec3D& hitPoint_v, Vec3D& hitDirection_v) {
+    (void) hitDirection_v;
+
     return hitPoint_v - mCenter_v;
 }
 
