@@ -43,8 +43,8 @@ void GeometryRenderer::render(struct Scene& scene, Camera& camera) {
     Debug::Log::i(TAG, "Render scene: %dx%d", width, height);
 
     #pragma omp parallel for schedule(static)
-    for (int j = 0; j < height; j++) {
-        for (int i = 0; i < width; i++) {
+    for (unsigned int j = 0; j < height; j++) {
+        for (unsigned int i = 0; i < width; i++) {
             Ray ray = camera.getRayToPixel(i, j);
             surface[i][j] = traceRay(ray, scene);
         }

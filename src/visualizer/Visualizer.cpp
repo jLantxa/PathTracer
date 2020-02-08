@@ -122,8 +122,8 @@ void VisualizerWindow::onRenderFinished(struct Scene& scene, Camera& camera) {
 
 void VisualizerWindow::render() {
     Surface& surface = mCamera.getSurface();
-    for (int i = 0; i < mWidth; i++) {
-        for (int j = 0; j < mHeight; j++) {
+    for (unsigned int i = 0; i < mWidth; i++) {
+        for (unsigned int j = 0; j < mHeight; j++) {
             Color c = surface[i][j];
             SDL_SetRenderDrawColor(mRenderer,
                 toColorInt(c.x),
@@ -172,7 +172,7 @@ int main(int argc, char* argv[]) {
     } else if (width*height > 1920 * 1080) {
         Debug::Log::e(TAG, "ERROR: You specified a surface of size %dx%d. Please, use a lower resolution.", width, height);
         return -1;
-    } else if (fov <= 0 | fov >= 180) {
+    } else if ((fov <= 0) | (fov >= 180)) {
         Debug::Log::e(TAG, "ERROR: Suported FOVs range from 0º to 180º");
         return -1;
     } else if (spp <= 0) {
@@ -200,7 +200,6 @@ int main(int argc, char* argv[]) {
     // This goes in a thread
     std::thread renderThread(&PathTracer::renderScene, &renderer, std::ref(scene), std::ref(camera));
     renderThread.detach();
-    //renderer.renderScene(scene, camera);
 
     waitForQuit();
     camera.getSurface().toPPM("visualizer.ppm");

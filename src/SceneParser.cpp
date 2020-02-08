@@ -58,7 +58,7 @@ void buildScene(struct Scene& scene) {
     color.set(0.75, 0.75, 0.75);
     v1.set(0, 0, 0);
     v2.set(0, 1, 0);
-    scene.objects.push_back(createPlane({color}, v1, v2));
+    scene.objects.push_back(createPlane({color, Color()}, v1, v2));
 
     Real ceiling = 8*sRad;
     v1.set(0, ceiling, 0);
@@ -68,35 +68,35 @@ void buildScene(struct Scene& scene) {
     color.set(0.75, 0.2, 0.2);
     v1.set(-5*sRad, 0, 0);
     v2.set(1, 0, 0);
-    scene.objects.push_back(createPlane({color}, v1, v2));
+    scene.objects.push_back(createPlane({color, Color()}, v1, v2));
 
     color.set(0.75, 0.2, 0.2);
     v1.set(5*sRad, 0, 0);
     v2.set(-1, 0, 0);
-    scene.objects.push_back(createPlane({color}, v1, v2));
+    scene.objects.push_back(createPlane({color, Color()}, v1, v2));
 
     color.set(0.75, 0.75, 0.75);
     v1.set(0, 0, -200);
     v2.set(0, 0, 1);
-    scene.objects.push_back(createPlane({color}, v1, v2));
+    scene.objects.push_back(createPlane({color, Color()}, v1, v2));
 
     color.set(0.75, 0.75, 0.75);
     v1.set(0, 0, 0);
     v2.set(0, 0, -1);
-    scene.objects.push_back(createPlane({color}, v1, v2));
+    scene.objects.push_back(createPlane({color, Color()}, v1, v2));
 
     color.set(0.707, 0, 0.707);
     v1.set(-2.5f*sRad, sRad, -200+sRad);
-    scene.objects.push_back(createSphere({color}, v1, sRad));
+    scene.objects.push_back(createSphere({color, Color()}, v1, sRad));
 
     color.set(0.707, 0.707, 0);
     v1.set(0, 2*sRad, -200 + sRad+sRad);
-    Sphere* greenSphere = createSphere({color}, v1, sRad);
+    Sphere* greenSphere = createSphere({color, Color()}, v1, sRad);
     scene.objects.push_back(greenSphere);
 
     color.set(0, 0.707, 0.707);
     v1.set(2.5f*sRad, 2*sRad, -190+sRad);
-    scene.objects.push_back(createSphere({color}, v1, sRad));
+    scene.objects.push_back(createSphere({color, Color()}, v1, sRad));
 }
 #endif
 

@@ -1,13 +1,16 @@
-CC=clang++
-CFLAGS=-std=c++17 -O3 -Wall -Werror -Wunused -Wunused-parameter
+CC := clang++
 
-BUILD=build
+CFLAGS := \
+	-std=c++2a -O3 \
+	-Werror -Wall -Wextra
 
-SRC=src
-INCLUDE=include
-BUILD=build
+BUILD := build
 
-TEST=$(SRC)/test
+SRC := src
+INCLUDE := include
+BUILD := build
+
+TEST := $(SRC)/test
 
 TRACER_SOURCES += \
 	$(SRC)/PathTracer.cpp \
@@ -25,8 +28,8 @@ init:
 	@mkdir pic/
 
 clean:
-	@rm -rf build/*
-	@rm -rf pic/*
+	@rm -rf $(BUILD)
+	@rm -rf $(DOC)
 
 count-lines:
 	@cloc Makefile $(SRC) $(INCLUDE)
