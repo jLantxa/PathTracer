@@ -197,7 +197,6 @@ int main(int argc, char* argv[]) {
     PathTracer renderer(spp, depth);
     renderer.addCallback(&window);
 
-    // This goes in a thread
     std::thread renderThread(&PathTracer::renderScene, &renderer, std::ref(scene), std::ref(camera));
     renderThread.detach();
 

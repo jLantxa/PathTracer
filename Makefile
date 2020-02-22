@@ -1,41 +1,15 @@
-CC := clang++
+.SECONDEXPANSION:
 
-CFLAGS := \
-	-std=c++2a -O3 \
-	-Werror -Wall -Wextra
+define define_mkdir_target
+$(1):
+	@mkdir -p $(1)
+endef
 
-BUILD := build
-
-SRC := src
-INCLUDE := include
-BUILD := build
-
-TEST := $(SRC)/test
-
-TRACER_SOURCES += \
-	$(SRC)/PathTracer.cpp \
-	$(SRC)/GeometryRenderer.cpp \
-	$(SRC)/Surface.cpp \
-	$(SRC)/Objects.cpp \
-	$(SRC)/Camera.cpp \
-	$(SRC)/Light.cpp \
-	$(SRC)/Vector3D.cpp \
-	$(SRC)/Utils.cpp \
-	$(SRC)/SceneParser.cpp
-
-init:
-	@mkdir build/
-	@mkdir pic/
-
-clean:
-	@rm -rf $(BUILD)
-	@rm -rf $(DOC)
-
-count-lines:
-	@cloc Makefile $(SRC) $(INCLUDE)
-
-docs:
-	doxygen
+SRC_DIRS	 := src
+INCLUDE_DIRS := include
+TEST_DIR	 := test
+BUILD_DIR  	 := build
+DOC_DIR		 := doc
 
 LIBXML2_LIBS=`xml2-config --libs`
 LIBXML2_CFLAGS=`xml2-config --cflags`
@@ -47,7 +21,35 @@ VISUALIZER_FLAGS += \
 	-DDEBUG_LEVEL=6 \
 	-lSDL2 \
 	$(LIBXML2_LIBS) $(LIBXML2_CFLAGS)
-Visualizer:
-	@$(CC) $(CFLAGS) $(VISUALIZER_FLAGS) \
-	-fopenmp -I $(INCLUDE)/ \
-	$(TRACER_SOURCES) $(VISUALIZER)/Visualizer.cpp -o $(BUILD)/Visualizer
+
+SRCS := $(shell find $(SRC_DIRS) -name "*.cpp")
+OBJS := $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(SRCS))
+CXXFLAGS := \
+	-std=c++17 -Werror -Wall \
+	$(patsubst %, -I %, $(INCLUDE_DIRS)/) \
+	$(VISUALIZER_FLAGS) -lSDL2 -fopenmp
+
+TARGET_VISUALIZER := $(BUILD_DIR)/Visualizer
+
+.PHONY: all
+all: Visualizer
+
+.PHONY: Visualizer
+Visualizer: $(TARGET_VISUALIZER)
+
+.PHONY: doc
+doc:
+	@doxygen
+
+$(TARGET_VISUALIZER): $(OBJS) | $$(dir $$@)
+	$(CXX) $(CXXFLAGS) -o $(TARGET_VISUALIZER) $(OBJS)
+
+$(BUILD_DIR)/%.o: %.cpp | $$(dir $$@)
+	$(CXX) -c $(CXXFLAGS) -o $@ $?
+
+.PHONY: clean
+clean:
+	@rm -rf $(BUILD_DIR)
+	@rm -rf $(DOC_DIR)
+
+$(foreach dir,$(sort $(dir $(OBJS))),$(eval $(call define_mkdir_target,$(dir))))
