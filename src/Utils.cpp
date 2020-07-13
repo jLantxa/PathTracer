@@ -18,21 +18,24 @@
 
 #include "Utils.hpp"
 
-#include "Common.hpp"
-#include "Objects.hpp"
-#include "Vector3D.hpp"
-#include "Light.hpp"
-
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 
 #include <limits>
+#include <random>
 #include <vector>
 
-// Random seed for erand48
-static uint16_t Xi[3];
+#include "Common.hpp"
+#include "Objects.hpp"
+#include "Vector3D.hpp"
+#include "Light.hpp"
+
+static std::random_device rdevice{};
+static std::mt19937 rgen{rdevice()};
+static std::normal_distribution<double> ndist{0, 1};
+static std::uniform_real_distribution<double> udist{0, 1};
 
 /** Calculate discriminant b^2 - 4ac */
 inline Real discriminant(Real a, Real b, Real c) {
@@ -83,8 +86,8 @@ Real intersectPlane(Vec3D l0, Vec3D l, Vec3D p0, Vec3D n) {
 }
 
 Vec3D sampleHemisphere(Vec3D& normal) {
-    double phi = 2 * M_PI * erand48(Xi);
-    double r = erand48(Xi);
+    double phi = ndist(rgen);
+    double r = udist(rgen);
     double rs = sqrt(r);
 
     Vec3D w = normal.normalize();
