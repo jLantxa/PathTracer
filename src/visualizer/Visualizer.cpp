@@ -16,9 +16,6 @@
  * limitations under the License.
 */
 
-#include "visualizer/Visualizer.hpp"
-
-#include <SDL2/SDL.h>
 #include <thread>
 
 #include "debug.hpp"
@@ -32,125 +29,7 @@
 
 #define DEFAULT_FILENAME "scene.xml"
 
-const char* TAG = "VisualizerWindow";
-
-VisualizerWindow::VisualizerWindow(Camera& camera)
-:   mCamera(camera),
-    mWidth(camera.getWidth()),
-    mHeight(camera.getHeight())
-{
-    Debug::Log::d(TAG, "VisualizerWindow()");
-    init();
-    update();
-}
-
-VisualizerWindow::~VisualizerWindow() {
-    Debug::Log::d(TAG, "~VisualizerWindow()");
-    SDL_DestroyRenderer(mRenderer);
-    SDL_DestroyWindow(mWindow);
-    SDL_Quit();
-}
-
-void VisualizerWindow::init() {
-    Debug::Log::d(TAG, "%s()", __func__);
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
-		Debug::Log::e(TAG, "%s:%d] SDL could not initialize! SDL Error: %s\n",
-            __func__, __LINE__, SDL_GetError());
-		return;
-	}
-	else
-	{
-        Uint32 windowFlag = SDL_WINDOW_OPENGL;
-
-        mWindow = SDL_CreateWindow (
-            (TITLE + " - " + TITLE_RENDERING).c_str(),  // title
-            SDL_WINDOWPOS_UNDEFINED,                    // initial x
-            SDL_WINDOWPOS_UNDEFINED,                    // initial y
-            mWidth,                                     // width
-            mHeight,                                    // height
-            windowFlag
-        );
-
-        if (mWindow == NULL) {
-            return;
-        }
-
-        SDL_SetWindowResizable(mWindow, SDL_FALSE);
-
-		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
-			Debug::Log::e(TAG, "%s:%d] Warning: Linear texture filtering not enabled!",
-                __func__, __LINE__);
-		}
-
-		mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED);
-		if (mRenderer == NULL) {
-			Debug::Log::e(TAG, "%s:%d] Renderer could not be created! SDL Error: %s\n",
-                __func__, __LINE__, SDL_GetError());
-			return;
-		}
-	}
-}
-
-void VisualizerWindow::update() {
-    const unsigned int camWidth = mCamera.getWidth();
-    const unsigned int camHeight = mCamera.getHeight();
-    if (mWidth != camWidth || mHeight != camHeight) {
-        mWidth = camWidth;
-        mHeight = camHeight;
-        SDL_SetWindowSize(mWindow, mWidth, mHeight);
-    }
-
-    SDL_RenderClear(mRenderer);
-    render();
-}
-
-void VisualizerWindow::onPartialResult(struct Scene& scene, Camera& camera) {
-    (void) scene;
-    (void) camera;
-
-    update();
-}
-
-void VisualizerWindow::onRenderFinished(struct Scene& scene, Camera& camera) {
-    (void) scene;
-    (void) camera;
-
-    update();
-    SDL_SetWindowTitle(mWindow, (TITLE + " - " + TITLE_FINISHED).c_str());
-}
-
-void VisualizerWindow::render() {
-    Surface& surface = mCamera.getSurface();
-    for (unsigned int i = 0; i < mWidth; i++) {
-        for (unsigned int j = 0; j < mHeight; j++) {
-            Color c = surface[i][j];
-            SDL_SetRenderDrawColor(mRenderer,
-                toColorInt(c.x),
-                toColorInt(c.y),
-                toColorInt(c.z),
-                0xFF);
-            SDL_RenderDrawPoint(mRenderer, i, j);
-        }
-    }
-    SDL_RenderPresent(mRenderer);
-}
-
-void waitForQuit() {
-    bool quit = false;
-    SDL_Event event;
-    do {
-        SDL_WaitEvent(&event);
-        switch (event.type) {
-        case SDL_KEYDOWN:
-            if (event.key.keysym.sym != SDLK_ESCAPE)
-                break;
-        case SDL_QUIT:
-            quit = true;
-            break;
-        }
-    } while (!quit);
-}
+const char* TAG = "Visualizer";
 
 int main(int argc, char* argv[]) {
     if (argc < 6 || argc > 7) {
@@ -193,14 +72,8 @@ int main(int argc, char* argv[]) {
     Camera camera(width, height, fov, camPos, camFacing);
     camera.setGammaCorrectionEnabled(true);
 
-    VisualizerWindow window(camera);
     PathTracer renderer(spp, depth);
-    renderer.addCallback(&window);
-
-    std::thread renderThread(&PathTracer::renderScene, &renderer, std::ref(scene), std::ref(camera));
-    renderThread.detach();
-
-    waitForQuit();
+    renderer.renderScene(scene, camera);
     camera.getSurface().toPPM("visualizer.ppm");
 
     return 0;
